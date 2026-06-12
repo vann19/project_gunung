@@ -2,5 +2,7 @@
     
     {{-- Hero Section --}}
     <x-hero />
+    <x-company />
+    <x-rental />
 
 </x-layouts.app>

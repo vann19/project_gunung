@@ -33,8 +33,10 @@
     /* Neutral */
     --color-surface: #ffffff;
     --color-surface-soft: #f9fafb;
+    --color-surface-dark: #191c20;
     --color-border: #e5e7eb;
     --color-muted: #6b7280;
+    --color-hijau: #28D800;
 }
 
 /* ============================================
