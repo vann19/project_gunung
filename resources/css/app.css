@@ -1,0 +1,136 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* ============================================
+   Design Tokens - Project Gunung
+   ============================================ */
+@theme {
+    /* Typography */
+    --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* Brand Colors */
+    --color-primary: #111417;
+    --color-primary-50:  #f0fdf4;
+    --color-primary-100: #dcfce7;
+    --color-primary-200: #bbf7d0;
+    --color-primary-300: #86efac;
+    --color-primary-400: #4ade80;
+    --color-primary-500: #22c55e;
+    --color-primary-600: #16a34a;
+    --color-primary-700: #15803d;
+    --color-primary-800: #166534;
+    --color-primary-900: #14532d;
+
+    --color-secondary-50:  #fefce8;
+    --color-secondary-100: #fef9c3;
+    --color-secondary-400: #facc15;
+    --color-secondary-500: #eab308;
+    --color-secondary-600: #ca8a04;
+
+    /* Neutral */
+    --color-surface: #ffffff;
+    --color-surface-soft: #f9fafb;
+    --color-border: #e5e7eb;
+    --color-muted: #6b7280;
+}
+
+/* ============================================
+   Google Fonts Import
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ============================================
+   Base Styles
+   ============================================ */
+@layer base {
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--color-surface-soft);
+        color: #111827;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-display);
+    }
+}
+
+/* ============================================
+   Component Utilities
+   ============================================ */
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer bg-primary-600 text-white hover:bg-primary-700 active:scale-95 shadow-sm;
+    }
+
+    .btn-outline {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer border border-primary-600 text-primary-600 hover:bg-primary-50 active:scale-95;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-100 active:scale-95;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+    }
+
+    .card-hover {
+        @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+    }
+
+    /* Form inputs */
+    .input {
+        @apply w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-sm
+               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+               placeholder:text-gray-400 transition duration-150;
+    }
+
+    .label {
+        @apply block text-sm font-medium text-gray-700 mb-1.5;
+    }
+
+    /* Badge */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .badge-success {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700;
+    }
+
+    .badge-warning {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-600;
+    }
+
+    /* Alert */
+    .alert {
+        @apply flex items-start gap-3 p-4 rounded-xl text-sm;
+    }
+
+    .alert-success {
+        @apply flex items-start gap-3 p-4 rounded-xl text-sm bg-primary-50 text-primary-800 border border-primary-200;
+    }
+
+    .alert-error {
+        @apply flex items-start gap-3 p-4 rounded-xl text-sm bg-red-50 text-red-800 border border-red-200;
+    }
+}
