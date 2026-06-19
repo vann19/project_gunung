@@ -12,7 +12,7 @@
     --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 
     /* Brand Colors */
-    --color-primary: #111417;
+    --color-primary: #005E97;
     --color-primary-50:  #f0fdf4;
     --color-primary-100: #dcfce7;
     --color-primary-200: #bbf7d0;
@@ -36,7 +36,11 @@
     --color-surface-dark: #191c20;
     --color-border: #e5e7eb;
     --color-muted: #6b7280;
-    --color-hijau: #28D800;
+    --color-biru: #5FC3FF;
+    --color-kuning: #FFEC85;
+    --color-birumuda: #53BEFF3D;
+    --color-birubaru: linear-gradient(to bottom, #082265, #2E96ED);
+    --color-kuningbaru: linear-gradient(to bottom, #FFEC85, #D3B20E);
 }
 
 /* ============================================
@@ -88,6 +92,26 @@
 
     .btn-ghost {
         @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-100 active:scale-95;
+    }
+
+    /* Gradient Background */
+    .bg-kuningbaru {
+        background: linear-gradient(to bottom, #FFEC85, #D3B20E);
+    }
+    .bg-birubaru {
+        background: linear-gradient(to bottom, #082265, #2E96ED);
+    }
+
+    /* Overlay Miring */
+    .bg-overlay-miring {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        translate: -50% -50%;
+        width: 110%;
+        height: 95%;
+        transform: rotate(-3.04deg);
+        pointer-events: none;
     }
 
     /* Cards */

@@ -1,26 +1,23 @@
-<div class="w-full py-20 lg:py-32 bg-primary text-white overflow-hidden relative">
+<div class="w-full  py-20 lg:py-32 bg-white text-white overflow-hidden relative">
     
     {{-- Container --}}
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24 relative z-10">
+    <div class="w-full max-w-screen-2xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24 relative z-10">
         
         {{-- KANAN (Visual): Teks & Info --}}
         <div class="w-full lg:w-1/2 flex flex-col items-start gap-8">
             
             {{-- Header Title --}}
             <div class="flex flex-col gap-4">
-                <h3 class="text-stone-300 text-2xl lg:text-3xl font-semibold tracking-wide">Company Profile</h3>
-                <div class="w-20 h-1.5 bg-hijau rounded-full shadow-[0_0_10px_rgba(40,216,0,0.5)]"></div>
+                <h3 class="self-stretch justify-center text-biru text-3xl font-medium  leading-10">Company Profile</h3>
+                <div class="w-20 h-1 bg-primary rounded-full"></div>
             </div>
             
             {{-- Headline --}}
-            <h2 class="text-zinc-200 text-4xl lg:text-5xl font-bold leading-tight">
-                Visi Kami Adalah<br class="hidden lg:block"/>
-                Memberdayakan Sang<br class="hidden lg:block"/>
-                Penjelajah
-            </h2>
-            
+            <div class="bg-linear-to-b from-blue-300 to-sky-600 bg-clip-text text-transparent self-stretch justify-center text-4xl font-extrabold leading-[50px]">Visi Kami Adalah<br/>Memberdayakan Sang<br/>Penjelajah</div>
+
+
             {{-- Deskripsi --}}
-            <p class="text-stone-300 text-lg leading-relaxed">
+            <p class="text-black text-lg leading-relaxed">
                 Di Basecamp Outdoors, kami percaya bahwa setiap pendakian adalah perjalanan spiritual. Misi kami bukan sekadar menyewakan alat, tapi memastikan keamanan dan kenyamanan Anda di medan tersulit sekalipun.
             </p>
             
@@ -30,19 +27,19 @@
                 {{-- Item 1 --}}
                 <div class="flex items-center gap-4 group">
                     <img src="{{ asset('icon/acc.svg') }}" alt="Check" class="w-6 h-6 flex-shrink-0 transition-transform group-hover:scale-110" />
-                    <span class="text-zinc-200 text-lg">Peralatan Standar Internasional (UIAA)</span>
+                    <span class="text-black text-lg">Peralatan Standar Internasional (UIAA)</span>
                 </div>
                 
                 {{-- Item 2 --}}
                 <div class="flex items-center gap-4 group">
                     <img src="{{ asset('icon/acc.svg') }}" alt="Check" class="w-6 h-6 flex-shrink-0 transition-transform group-hover:scale-110" />
-                    <span class="text-zinc-200 text-lg">Pemandu Bersertifikat & Berpengalaman</span>
+                    <span class="text-black text-lg">Pemandu Bersertifikat & Berpengalaman</span>
                 </div>
                 
                 {{-- Item 3 --}}
                 <div class="flex items-center gap-4 group">
                     <img src="{{ asset('icon/acc.svg') }}" alt="Check" class="w-6 h-6 flex-shrink-0 transition-transform group-hover:scale-110" />
-                    <span class="text-zinc-200 text-lg">Komitmen Kelestarian Lingkungan</span>
+                    <span class="text-black text-lg">Komitmen Kelestarian Lingkungan</span>
                 </div>
                 
             </div>
@@ -64,7 +61,7 @@
                 
                 {{-- Menggunakan gambar placeholder yang lebih natural (unsplash) --}}
                 <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                     src="https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                     src="{{ asset('img/ninja.png') }}" 
                      alt="Company Profile Image" />
             </div>
             

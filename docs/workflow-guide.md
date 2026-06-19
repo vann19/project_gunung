@@ -204,3 +204,6 @@ Postman digunakan untuk mengetes endpoint API tanpa perlu membuat frontend.
 5. Di kotak Token, paste token yang tadi kamu copy di Langkah 1.
 6. Pindah ke tab **Headers** (opsional tapi disarankan). Tambahkan key: `Accept` dengan value: `application/json`.
 7. Klik **Send**. Kamu akan bisa mengakses data yang terkunci tersebut!
+
+
+

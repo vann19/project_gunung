@@ -4,5 +4,9 @@
     <x-hero />
     <x-company />
     <x-rental />
+    <x-layanan />
+    <x-mulai />
+    <x-mereka />
+    
 
 </x-layouts.app>
