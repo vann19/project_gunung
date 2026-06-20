@@ -55,8 +55,8 @@
                 <img src="{{ asset('icon/translete.svg') }}" alt="Translate" class="w-5 h-5 " />
             </button>
             
-            <a href="/login" class="size- px-6 py-2 bg-linear-to-b from-blue-300 to-sky-600 rounded-full inline-flex flex-col justify-center items-center">
-                <div class="text-center justify-center text-white text-base font-bold  leading-6">Login</div>
+            <a href="/login" class="px-6 py-2 bg-linear-to-b from-blue-300 to-sky-600 hover:from-blue-400 hover:to-sky-700 hover:scale-105 hover:shadow-lg rounded-full inline-flex flex-col justify-center items-center transition-all duration-300 cursor-pointer">
+                <div class="text-center justify-center text-white text-base font-bold leading-6">Login</div>
             </a>
         </div>
 

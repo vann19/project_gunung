@@ -7,6 +7,7 @@
     <x-layanan />
     <x-mulai />
     <x-mereka />
+    <x-footer />
     
 
 </x-layouts.app>
