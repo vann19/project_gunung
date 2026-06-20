@@ -13,7 +13,7 @@
 
             {{-- Badge --}}
             <div class="px-4 py-1.5 bg-secondary-400 rounded-full inline-flex items-center gap-1.5">
-                <img src="{{ asset('icon/acc.svg') }}" alt="" class="w-3.5 h-3.5" />
+                <img src="{{ asset('icon/acc cuci.svg') }}" alt="" class="w-3.5 h-3.5" />
                 <span class="text-surface-dark text-xs font-bold font-['JetBrains_Mono'] uppercase tracking-widest">
                     Technical Care Specialist
                 </span>

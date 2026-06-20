@@ -32,7 +32,7 @@
 
             {{-- Actions --}}
             <div class="flex flex-col sm:flex-row items-start gap-4 mt-2">
-                <a href="/sewa" class="px-8 py-4 bg-primary hover:bg-primary/80 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-[0_0_20px_rgba(101,163,13,0.2)]">
+                <a href="/rental" class="px-8 py-4 bg-primary hover:bg-primary/80 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-[0_0_20px_rgba(101,163,13,0.2)]">
                     <span class="text-white text-base font-bold">Sewa Sekarang</span>
                     {{-- Icon Panah (Placeholder dari kotak HTML) --}}
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>

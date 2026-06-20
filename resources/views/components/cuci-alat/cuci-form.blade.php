@@ -1,4 +1,4 @@
-<div id="detail-barang" class="w-full bg-surface-soft py-16 lg:py-20 px-6 scroll-mt-24">
+<div id="detail-barang" class="w-full bg-white py-16 lg:py-20 px-6 scroll-mt-24">
     <form action="#" method="POST" class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12" x-data="{ paket: 'reproofing' }">
         @csrf
 

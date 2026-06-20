@@ -18,13 +18,13 @@
             'icon'  => 'open trip.svg',
             'title' => 'Open Trip',
             'desc'  => 'Join collective expeditions.',
-            'href'  => '/service#open-trip',
+            'href'  => '/service/open-trip',
         ],
         [
             'icon'  => 'guide.svg',
             'title' => 'Guide Pendakian',
             'desc'  => 'Expert certified guides.',
-            'href'  => '/service#guide',
+            'href'  => '/service/open-trip',
         ],
         [
             'icon'  => 'market biru.svg',
