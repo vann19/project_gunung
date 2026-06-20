@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
+@plugin '@tailwindcss/forms';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -45,6 +46,7 @@
     --color-birumuda: #53BEFF3D;
     --color-birubaru: linear-gradient(to bottom, #082265, #2E96ED);
     --color-kuningbaru: linear-gradient(to bottom, #FFEC85, #D3B20E);
+    --color-biruputih: linear-gradient(to bottom, #FFFFFF, #CCEBFF);
 }
 
 /* ============================================
@@ -102,6 +104,10 @@
     }
     .bg-birubaru {
         background: linear-gradient(to bottom, #082265, #2E96ED);
+    }
+
+    .bg-biruputih {
+        background: linear-gradient(to bottom, #FFFFFF, #CCEBFF);
     }
 
     /* Overlay Miring */
