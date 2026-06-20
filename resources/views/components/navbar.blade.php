@@ -12,7 +12,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 
         {{-- TENGAH: Desktop Navigation --}}
-        <div class="hidden lg:flex justify-center items-center gap-8" x-data="{ active: '{{ request()->path() == '/' ? '/' : '/' . request()->path() }}' }">
+        <div class="hidden lg:flex justify-center items-center gap-8" x-data="{ active: '{{ Str::startsWith(request()->path(), 'service') ? '/service' : (request()->path() == '/' ? '/' : '/' . request()->path()) }}' }">
             
             <a href="/" @click="active = '/'" :class="active === '/' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start transition-all group">
                 <div :class="active === '/' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">Home</div>
@@ -27,14 +27,29 @@
                 </div>
             </a>
             
-            <a href="/service" @click="active = '/service'" :class="active === '/service' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
-                <div class="flex justify-start items-center gap-1">
-                    <div :class="active === '/service' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">Service</div>
-                    <div class="flex flex-col justify-start items-center">
-                        <svg class="w-2 h-2 text-primary/75 group-hover:text-primary transition-colors" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <div class="relative" x-data="{ serviceOpen: false }" @mouseenter="serviceOpen = true" @mouseleave="serviceOpen = false">
+                <a href="/service" @click="active = '/service'" :class="active === '/service' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
+                    <div class="flex justify-start items-center gap-1">
+                        <div :class="active === '/service' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">Layanan</div>
+                        <div class="flex flex-col justify-start items-center">
+                            <svg :class="serviceOpen ? 'rotate-180' : 'rotate-0'" class="w-2 h-2 text-primary/75 group-hover:text-primary transition-all" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </div>
                     </div>
+                </a>
+
+                {{-- Dropdown Layanan --}}
+                <div x-show="serviceOpen"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2"
+                     class="absolute top-full left-1/2 -translate-x-1/2 pt-3"
+                     style="display: none;">
+                    <x-layanan-menu />
                 </div>
-            </a>
+            </div>
             
             <a href="/about" @click="active = '/about'" :class="active === '/about' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
                 <div :class="active === '/about' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">About</div>
@@ -88,7 +103,7 @@
         <div class="px-6 py-4 flex flex-col gap-4">
             <a href="/" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">Home</a>
             <a href="/rental" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">Rental Alat</a>
-            <a href="/service" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">Service</a>
+            <a href="/service" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">Layanan</a>
             <a href="/about" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">About</a>
             <a href="/contact" class="text-primary/75 hover:text-primary text-lg font-medium transition-colors py-2 border-b border-primary/5">Contact</a>
             
