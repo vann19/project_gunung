@@ -30,7 +30,7 @@
             'icon'  => 'market biru.svg',
             'title' => 'Marketplace Second',
             'desc'  => 'Quality pre-owned technical gear.',
-            'href'  => '/service#marketplace',
+            'href'  => '/service/marketplace',
         ],
     ];
 @endphp
