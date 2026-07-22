@@ -541,9 +541,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('admin/open-trip-orders', \App\Http\Controllers\Admin\OpenTripOrderController::class)->only(['index', 'destroy'])->names('admin.open-trip-orders');
     Route::patch('admin/open-trip-orders/{order}/status', [\App\Http\Controllers\Admin\OpenTripOrderController::class, 'updateStatus'])->name('admin.open-trip-orders.status');
+    Route::delete('admin/open-trip-orders-delete-all', [\App\Http\Controllers\Admin\OpenTripOrderController::class, 'deleteAll'])->name('admin.open-trip-orders.delete-all');
 
     Route::resource('admin/hiking-guide-orders', \App\Http\Controllers\Admin\HikingGuideOrderController::class)->only(['index', 'destroy'])->names('admin.hiking-guide-orders');
     Route::patch('admin/hiking-guide-orders/{order}/status', [\App\Http\Controllers\Admin\HikingGuideOrderController::class, 'updateStatus'])->name('admin.hiking-guide-orders.status');
+    Route::delete('admin/hiking-guide-orders-delete-all', [\App\Http\Controllers\Admin\HikingGuideOrderController::class, 'deleteAll'])->name('admin.hiking-guide-orders.delete-all');
 });
 
 Route::get('/admin-login', function () {

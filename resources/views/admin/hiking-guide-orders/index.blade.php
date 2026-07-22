@@ -15,6 +15,19 @@
                     </div>
                 @endif
 
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Daftar Pesanan Guide</h3>
+                    @if(count($orders) > 0)
+                        <form action="{{ route('admin.hiking-guide-orders.delete-all') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin MENGHAPUS SEMUA pesanan Guide? Tindakan ini tidak dapat dibatalkan!');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-2 rounded shadow transition">
+                                🗑️ Hapus Semua Pesanan
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
