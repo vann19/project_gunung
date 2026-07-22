@@ -554,4 +554,20 @@ Route::get('/login-admin', function () {
     return redirect()->route('login');
 });
 
+Route::get('/storage/{path}', function ($path) {
+    $file = storage_path('app/public/' . $path);
+    if (!file_exists($file)) {
+        abort(404);
+    }
+    return response()->file($file);
+})->where('path', '.*');
+
+Route::get('/sitemap.xml', function () {
+    $mountains = \App\Models\Mountain::where('is_visible', true)->get();
+    $equipments = \App\Models\RentalEquipment::where('is_visible', true)->get();
+
+    $content = view('sitemap', compact('mountains', 'equipments'));
+    return response($content, 200)->header('Content-Type', 'text/xml');
+});
+
 require __DIR__.'/auth.php';

@@ -7,6 +7,8 @@ use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
+use Intervention\Image\Laravel\Facades\Image;
+
 class CloudinaryService
 {
     protected Cloudinary $cloudinary;
@@ -30,9 +32,23 @@ class CloudinaryService
             : $this->folder;
 
         $publicId = Str::random(40);
+        $filePath = $file->getRealPath();
+
+        // Jika ukuran file > 5MB, kompres otomatis agar tidak melebihi batas 10MB Cloudinary
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            try {
+                $tempPath = sys_get_temp_dir() . '/' . $publicId . '.jpg';
+                $img = Image::read($file);
+                $img->scaleDown(width: 1920, height: 1920);
+                $img->toJpeg(80)->save($tempPath);
+                $filePath = $tempPath;
+            } catch (\Throwable $e) {
+                // Fallback ke file asli jika kompresi gagal
+            }
+        }
 
         $result = $this->cloudinary->uploadApi()->upload(
-            $file->getRealPath(),
+            $filePath,
             [
                 'folder'          => $folder,
                 'public_id'       => $publicId,
@@ -43,6 +59,10 @@ class CloudinaryService
                 'overwrite'       => true,
             ]
         );
+
+        if (isset($tempPath) && file_exists($tempPath)) {
+            @unlink($tempPath);
+        }
 
         return $result['secure_url'];
     }
