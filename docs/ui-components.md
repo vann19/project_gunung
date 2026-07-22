@@ -124,3 +124,73 @@ Jika kamu butuh custom script atau style khusus hanya di halaman tertentu, kamu 
 1. **Bersih**: Halaman `.blade.php` utama tidak penuh dengan rentetan class Tailwind yang panjang.
 2. **Konsisten**: Jika klien minta ubah warna *semua* tombol dari Hijau ke Biru, kita hanya perlu ubah 1 file (`resources/css/app.css`), tidak perlu cari tombol satu-satu.
 3. **Cepat**: `<x-input label="Nama" name="nama">` jauh lebih cepat diketik daripada membuat div, label, input, dan span error secara manual.
+
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\CuciAlat;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class CuciAlatController extends Controller
+{
+    public function index(Request $request): View
+    {
+        $query = CuciAlat::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $packages = $query->latest()->get();
+        $totalPackages = CuciAlat::count();
+
+        return view('admin.cuci-alats.index', compact('packages', 'totalPackages'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'duration' => 'required|string|max:100',
+            'description' => 'required|string',
+            'price' => 'required|string|max:100',
+            'unit' => 'required|string|max:50',
+        ]);
+
+        $validated['is_recommended'] = $request->has('is_recommended');
+
+        CuciAlat::create($validated);
+
+        return redirect()->route('admin.cuci-alats.index')->with('success', 'Paket Cuci Alat baru berhasil ditambahkan!');
+    }
+
+    public function update(Request $request, CuciAlat $cuci_alat): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'duration' => 'required|string|max:100',
+            'description' => 'required|string',
+            'price' => 'required|string|max:100',
+            'unit' => 'required|string|max:50',
+        ]);
+
+        $validated['is_recommended'] = $request->has('is_recommended');
+
+        $cuci_alat->update($validated);
+
+        return redirect()->route('admin.cuci-alats.index')->with('success', 'Paket Cuci Alat berhasil diperbarui!');
+    }
+
+    public function destroy(CuciAlat $cuci_alat): RedirectResponse
+    {
+        $cuci_alat->delete();
+
+        return redirect()->route('admin.cuci-alats.index')->with('success', 'Paket Cuci Alat berhasil dihapus!');
+    }
+}

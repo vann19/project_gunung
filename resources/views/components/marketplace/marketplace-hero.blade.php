@@ -10,14 +10,7 @@
                 <p class="text-blue-100 leading-relaxed">
                     Berikan kesempatan kedua untuk perlengkapan teknis berkualitas. Setiap barang telah melalui verifikasi standar untuk menjamin keamanan pendakian Anda di medan ekstrem.
                 </p>
-                <div class="flex flex-wrap items-center gap-3">
-                    <a href="#produk" class="px-6 py-3 bg-secondary-400 hover:bg-secondary-500 rounded-lg font-bold text-surface-dark text-sm transition-colors">
-                        Mulai Belanja
-                    </a>
-                    <a href="#" class="px-6 py-3 border border-white/40 hover:bg-white/10 rounded-lg font-bold text-white text-sm transition-colors">
-                        Jual Gear Anda
-                    </a>
-                </div>
+               
             </div>
 
             {{-- Kanan: Kualitas Terjamin --}}

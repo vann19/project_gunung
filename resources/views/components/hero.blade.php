@@ -1,82 +1,204 @@
-<div class="relative w-full bg-white flex justify-center overflow-hidden">
-    
-    {{-- Background Image & Gradient Overlay --}}
-    <div class="absolute inset-0 z-0">
-        <img src="{{ asset('img/Section.png') }}" alt="Gunung Background" class="w-full h-full object-cover object-center" style="filter: brightness(1.1) contrast(1.1);" />
-        {{-- Gradient agar teks sebelah kiri tetap terbaca jelas --}}
+@php
+    $slides = config('mountains.slides');
+@endphp
 
-    </div>
+<div
+    class="relative w-full h-screen overflow-hidden"
+    x-data="{
+        active: 0,
+        total: {{ count($slides) }},
+        interval: null,
+        weatherRefresh: null,
+        weatherData: {},
+        weatherLoading: true,
+        next() {
+            this.active = (this.active + 1) % this.total;
+        },
+        goTo(index) {
+            this.active = index;
+        },
+        startAutoplay() {
+            this.interval = setInterval(() => this.next(), 5000);
+        },
+        resetAutoplay() {
+            clearInterval(this.interval);
+            this.startAutoplay();
+        },
+        getWeather(index) {
+            return this.weatherData[index] ?? null;
+        },
+        tempFor(index, fallback) {
+            const w = this.getWeather(index);
+            return w ? w.temperature_formatted : fallback;
+        },
+        weatherType(index) {
+            const w = this.getWeather(index);
+            return w ? w.weather : 'cloudy';
+        },
+        weatherLabel(index) {
+            const w = this.getWeather(index);
+            return w ? w.weather_label : '';
+        },
+        async fetchWeather() {
+            try {
+                const res = await fetch('{{ url('/api/v1/mountain-weather') }}');
+                const json = await res.json();
+                if (json.status && Array.isArray(json.data)) {
+                    json.data.forEach(item => {
+                        this.weatherData[item.index] = item;
+                    });
+                }
+            } catch (e) {
+                console.warn('Gagal memuat cuaca gunung:', e);
+            }
+            this.weatherLoading = false;
+        },
+    }"
+    x-init="
+        fetchWeather();
+        startAutoplay();
+        weatherRefresh = setInterval(() => fetchWeather(), 900000);
+    "
+>
+    {{-- Slides Full Screen --}}
+    @foreach ($slides as $index => $slide)
+        <div
+            class="absolute inset-0"
+            @if ($index > 0) style="display: none;" @endif
+            x-show="active === {{ $index }}"
+            x-transition:enter="transition-opacity ease-out duration-700"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-in duration-700"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+        >
+            <img
+                src="{{ asset($slide['image']) }}"
+                alt="{{ $slide['name'] }}"
+                class="absolute inset-0 w-full h-full object-cover object-center"
+                style="filter: brightness(1.1) contrast(1.1);"
+            />
+            <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20"></div>
+        </div>
+    @endforeach
 
-    {{-- Main Container --}}
-    <div class="relative z-10 w-full max-w-[1280px] min-h-[90vh] px-6 lg:px-12 py-20 lg:py-32 flex flex-col md:flex-row items-center justify-between gap-12">
-        
-        {{-- KIRI: Teks & Tombol --}}
+    {{-- Konten Kiri --}}
+    <div class="relative z-10 h-full max-w-[1280px] mx-auto px-6 lg:px-12 flex flex-col justify-center">
         <div class="w-full md:w-1/2 flex flex-col items-start gap-6">
-            {{-- Badge Premium --}}
             <div class="px-4 py-1.5 bg-primary/20 rounded-full border border-primary/30 backdrop-blur-sm inline-flex items-center">
                 <span class="text-white text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-widest">
-                    PREMIUM OUTDOORS
+                    {{ __('home.hero_tagline') }}
                 </span>
             </div>
 
-            {{-- Headline --}}
             <h1 class="text-5xl lg:text-6xl font-bold text-zinc-200 leading-[1.1] tracking-tight">
-                Taklukkan Puncak,<br/>
-                <span class="text-stone-400 italic">Temukan Jati Dirimu</span>
+                {{ __('home.hero_title_1') }}<br/>
+                <span class="text-stone-400 italic">{{ __('home.hero_title_2') }}</span>
             </h1>
 
-            {{-- Deskripsi --}}
             <p class="text-stone-300 text-lg leading-relaxed max-w-[500px]">
-                Persiapkan ekspedisi Anda dengan peralatan kelas dunia dan panduan profesional dari mereka yang telah menaklukkan puncak-puncak tertinggi Indonesia.
+                {{ __('home.hero_desc') }}
             </p>
 
-            {{-- Actions --}}
             <div class="flex flex-col sm:flex-row items-start gap-4 mt-2">
-                <a href="/rental" class="px-8 py-4 bg-primary hover:bg-primary/80 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-[0_0_20px_rgba(101,163,13,0.2)]">
-                    <span class="text-white text-base font-bold">Sewa Sekarang</span>
-                    {{-- Icon Panah (Placeholder dari kotak HTML) --}}
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <a href="/rental" class="px-8 py-4 bg-kuning hover:bg-kuning/90 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-md">
+                    <span class="text-zinc-800 text-base font-bold">{{ __('home.hero_cta_rent') }}</span>
+                    <svg class="w-5 h-5 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
-                
-                <a href="/galeri" class="px-8 py-4 rounded-lg border border-stone-400 hover:bg-white/5 text-stone-300 hover:text-white transition-all flex justify-center items-center active:scale-95">
-                    <span class="text-base font-bold">Lihat Galeri</span>
-                </a>
+
+              
             </div>
         </div>
+    </div>
 
-        {{-- KANAN/BAWAH: Info Panel (Elevasi, Suhu, Cuaca) --}}
-        <div class="absolute bottom-8 lg:bottom-12 right-6 lg:right-12 w-[calc(100%-3rem)] md:w-auto">
-            <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-6 flex items-center gap-6 lg:gap-10 shadow-2xl">
-                
-                {{-- Elevasi --}}
-                <div class="flex flex-col items-center">
-                    <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">ELEVASI</span>
-                    <span class="text-zinc-200 text-3xl font-semibold">3.676m</span>
+    {{-- Info Panel Kanan Bawah --}}
+    <div class="absolute bottom-8 lg:bottom-12 right-6 lg:right-12 z-20">
+        <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-6 flex items-center gap-6 lg:gap-10 shadow-2xl">
+            @foreach ($slides as $index => $slide)
+                <div
+                    class="flex items-center gap-6 lg:gap-10"
+                    @if ($index > 0) style="display: none;" @endif
+                    x-show="active === {{ $index }}"
+                    x-transition:enter="transition-opacity ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                >
+                    <div class="flex flex-col items-center min-w-[100px]">
+                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_mountain') }}</span>
+                        <span class="text-zinc-200 text-base lg:text-lg font-semibold text-center leading-tight">{{ $slide['name'] }}</span>
+                    </div>
+
+                    <div class="w-px h-12 bg-neutral-600/50"></div>
+
+                    <div class="flex flex-col items-center">
+                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_elev') }}</span>
+                        <span class="text-zinc-200 text-3xl font-semibold">{{ $slide['elevation'] }}</span>
+                    </div>
+
+                    <div class="w-px h-12 bg-neutral-600/50"></div>
+
+                    <div class="flex flex-col items-center min-w-[72px]">
+                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_temp') }}</span>
+                        <span
+                            class="text-zinc-200 text-3xl font-semibold tabular-nums"
+                            x-text="tempFor({{ $index }}, '—')"
+                            :class="weatherLoading && 'opacity-50 animate-pulse'"
+                        ></span>
+                    </div>
+
+                    <div class="w-px h-12 bg-neutral-600/50"></div>
+
+                    <div class="flex flex-col items-center min-w-[72px]">
+                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_weather') }}</span>
+
+                        {{-- Cerah --}}
+                        <svg x-show="weatherType({{ $index }}) === 'sunny'" class="w-8 h-8 text-yellow-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zm10-8a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
+                        </svg>
+
+                        {{-- Hujan --}}
+                        <svg x-show="weatherType({{ $index }}) === 'rainy'" class="w-8 h-8 text-blue-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
+                        </svg>
+
+                        {{-- Salju --}}
+                        <svg x-show="weatherType({{ $index }}) === 'snowy'" class="w-8 h-8 text-sky-200 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
+                        </svg>
+
+                        {{-- Berkabut --}}
+                        <svg x-show="weatherType({{ $index }}) === 'foggy'" class="w-8 h-8 text-stone-400 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
+                        </svg>
+
+                        {{-- Berawan (default) --}}
+                        <svg x-show="weatherType({{ $index }}) === 'cloudy'" class="w-8 h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
+                        </svg>
+
+                        <span
+                            class="text-stone-400 text-[10px] font-['JetBrains_Mono'] mt-1 uppercase tracking-wide"
+                            x-text="weatherLabel({{ $index }})"
+                            x-show="!weatherLoading && weatherLabel({{ $index }})"
+                        ></span>
+                    </div>
                 </div>
-
-                {{-- Garis Pemisah --}}
-                <div class="w-px h-12 bg-neutral-600/50"></div>
-
-                {{-- Temp --}}
-                <div class="flex flex-col items-center">
-                    <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">TEMP</span>
-                    <span class="text-zinc-200 text-3xl font-semibold">4&deg;C</span>
-                </div>
-
-                {{-- Garis Pemisah --}}
-                <div class="w-px h-12 bg-neutral-600/50"></div>
-
-                {{-- Cuaca --}}
-                <div class="flex flex-col items-center">
-                    <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">CUACA</span>
-                    {{-- Icon Cuaca (Matahari / Awan) --}}
-                    <svg class="w-8 h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"></path>
-                    </svg>
-                </div>
-                
-            </div>
+            @endforeach
         </div>
-        
+    </div>
+
+    {{-- Indikator Carousel Tengah Bawah --}}
+    <div class="absolute bottom-8 lg:bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        @foreach ($slides as $index => $slide)
+            <button
+                type="button"
+                @click="goTo({{ $index }}); resetAutoplay()"
+                class="h-2 rounded-full transition-all duration-300"
+                :class="active === {{ $index }} ? 'w-8 bg-white' : 'w-4 bg-white/40 hover:bg-white/60'"
+                aria-label="Ke slide {{ $index + 1 }}"
+            ></button>
+        @endforeach
     </div>
 </div>

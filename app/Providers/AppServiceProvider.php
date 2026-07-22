@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Push visit-logging middleware into the web group so regular page views are recorded
+        if ($this->app->bound('router')) {
+            $this->app['router']->pushMiddlewareToGroup('web', \App\Http\Middleware\LogVisit::class);
+        }
     }
 }

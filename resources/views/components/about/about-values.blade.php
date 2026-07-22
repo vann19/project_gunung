@@ -23,24 +23,3 @@
     ];
 @endphp
 
-<div class="w-full bg-gray-50 py-16 lg:py-20 px-6">
-    <div class="max-w-[1280px] mx-auto">
-
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Misi & Nilai Kami</h2>
-            <span class="w-14 h-1 bg-primary rounded-full"></span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach ($values as $value)
-                <div class="bg-white border border-gray-200 rounded-xl p-6">
-                    <div class="w-11 h-11 bg-primary/8 rounded-xl flex items-center justify-center mb-4">
-                        {!! $value['icon'] !!}
-                    </div>
-                    <h3 class="font-bold text-gray-900 mb-2">{{ $value['title'] }}</h3>
-                    <p class="text-gray-500 text-sm leading-6">{{ $value['desc'] }}</p>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</div>

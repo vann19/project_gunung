@@ -3,7 +3,7 @@
     {{-- Hero Section --}}
     <x-hero />
     <x-company />
-    <x-rental />
+    <x-rental :categories="$rentalCategories" />
     <x-layanan />
     <x-mulai />
     <x-mereka />

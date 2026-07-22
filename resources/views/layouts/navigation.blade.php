@@ -11,9 +11,30 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-6 sm:-my-px sm:ms-8 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.rentals.index')" :active="request()->routeIs('admin.rentals.*')">
+                        {{ __('Kelola Rental') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.rental-orders.index')" :active="request()->routeIs('admin.rental-orders.*')">
+                        {{ __('Pesanan Rental') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.open-trips.index')" :active="request()->routeIs('admin.open-trips.*')">
+                        {{ __('Open Trip') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.cuci-alats.index')" :active="request()->routeIs('admin.cuci-alats.*')">
+                        {{ __('Cuci Alat') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.marketplaces.index')" :active="request()->routeIs('admin.marketplaces.*')">
+                        {{ __('Marketplace') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.hiking-guides.index')" :active="request()->routeIs('admin.hiking-guides.*')">
+                        {{ __('Guide Pendakian') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
+                        {{ __('Testimoni') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -69,6 +90,27 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.rentals.index')" :active="request()->routeIs('admin.rentals.*')">
+                {{ __('Kelola Rental') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.rental-orders.index')" :active="request()->routeIs('admin.rental-orders.*')">
+                {{ __('Pesanan Rental') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.open-trips.index')" :active="request()->routeIs('admin.open-trips.*')">
+                {{ __('Open Trip') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.cuci-alats.index')" :active="request()->routeIs('admin.cuci-alats.*')">
+                {{ __('Cuci Alat') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.marketplaces.index')" :active="request()->routeIs('admin.marketplaces.*')">
+                {{ __('Marketplace') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.hiking-guides.index')" :active="request()->routeIs('admin.hiking-guides.*')">
+                {{ __('Guide Pendakian') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
+                {{ __('Testimoni') }}
             </x-responsive-nav-link>
         </div>
 

@@ -1,5 +1,7 @@
+@props(['categories' => collect()])
+
 <div class="w-full py-20 lg:py-24 text-white relative"
-     style="background-image: linear-gradient(to bottom, rgba(8,34,101,0.88), rgba(46,150,237,0.82)), url('{{ asset('img/hutan.png') }}'); background-size: cover; background-position: center;">
+     style="background-image: linear-gradient(to bottom, rgba(8,34,101,0.88), rgba(187, 190, 193, 0.82)), url('{{ asset('img/cucialat.jpeg') }}'); background-size: cover; background-position: center;">
     <div class="max-w-[1280px] mx-auto px-6 lg:px-12 flex flex-col gap-12">
 
         {{-- Section Rental Highlight Header --}}
@@ -35,32 +37,26 @@
             {{-- Image --}}
             <div class="self-stretch rounded-xl overflow-hidden">
                 <div class="self-stretch h-44 relative overflow-hidden bg-gradient-to-b from-stone-300 to-stone-300">
-                    <img class="h-44 w-full object-cover" src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ultimate Expedition Set" />
+                    <img class="h-44 w-full object-cover" src="img/ruangan.jpeg" alt="ruangan basecamp outdors" />
                 </div>
             </div>
             {{-- Content --}}
-            <div class="self-stretch flex flex-col justify-start items-start gap-3">
-                <div class="self-stretch flex justify-between items-start">
-                    <div class=" flex flex-col justify-start items-start">
-                        <div class="text-sky-700 text-2xl font-normal  leading-9">Ultimate Expedition<br/>Set</div>
-                    </div>
-                    <div class="px-2 py-1 bg-yellow-400/60 rounded-sm flex flex-col justify-start items-start">
-                        <div class="text-sky-700 text-xs font-normal font-['JetBrains_Mono'] leading-4">POPULER</div>
-                    </div>
-                </div>
-                <div class="self-stretch">
-                    <div class="text-stone-900/75 text-base font-normal  leading-6">Paket lengkap tenda 4 musim, sleeping bag,dan peralatan masak ultralight.</div>
-                </div>
-                <div class="self-stretch pt-4 border-t border-gray-500/30 flex justify-between items-center">
-                    <div class="relative">
-                        <span class="text-yellow-400 text-base font-black font-['Hanken_Grotesk'] leading-6">Rp 250k </span>
-                        <span class="text-stone-900/75 text-xs font-normal font-['Hanken_Grotesk'] leading-4">/hari</span>
-                    </div>
-                    <button class="p-2 bg-sky-700/20 hover:bg-sky-700/30 rounded-lg flex justify-center items-center transition-colors">
-                        <svg class="w-5 h-5 text-sky-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    </button>
-                </div>
-            </div>
+           <div class="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-3">
+    <div class="self-stretch flex justify-between items-start">
+        <div class="flex flex-col justify-start items-start">
+            <!-- Judul Responsif -->
+            <h2 class="text-sky-700 text-lg sm:text-xl md:text-2xl font-bold sm:font-normal leading-snug sm:leading-9">
+                Peralatan camping terlengkap di Jogja Set
+            </h2>
+        </div>
+    </div>
+    <div class="self-stretch">
+        <!-- Subjudul/Deskripsi Responsif -->
+        <p class="text-stone-900/75 text-sm sm:text-base font-normal leading-relaxed sm:leading-6">
+            Paket lengkap tenda 4 musim, sleeping bag, dan peralatan masak ultralight.
+        </p>
+    </div>
+</div>
         </div>
 
         {{-- Card 2: Stacked Smaller Cards --}}
@@ -71,7 +67,7 @@
                 <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-500 mb-2">
                     <img src="icon/pangang.svg" alt="Grill & Chill Kit" class="w-full h-full object-contain">
                 </div>
-                <h4 class="text-primary text-xl font-semibold">Grill & Chill Kit</h4>
+                <h4 class="text-primary text-xl font-semibold">Paket Grill dan piknik</h4>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Sempurna untuk piknik santai di kaki gunung atau area perkemahan keluarga.
                 </p>
@@ -85,7 +81,7 @@
                 <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-gray-500 mb-2">
                     <img src="icon/air.svg" alt="Advanced Hydropack" class="w-full h-full object-contain">
                 </div>
-                <h4 class="text-primary text-xl font-semibold">Advanced Hydropack</h4>
+                <h4 class="text-primary text-xl font-semibold">Laundry Tenda dan alat camping   </h4>
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Sistem hidrasi teknis untuk trail running atau pendakian cepat tektok.
                 </p>
@@ -105,19 +101,21 @@
             <div class="w-full flex flex-col items-center gap-6 z-10">
                 <h3 class="text-gray-800 text-3xl font-semibold text-center mt-2">Kategori Rental</h3>
                 
-                {{-- Tags Kategori --}}
+                {{-- Tags Kategori Dinamis dari DB --}}
                 <div class="flex flex-wrap justify-center gap-3 mt-4">
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Camping</span>
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Kelompok</span>
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Masak</span>
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Makan</span>
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Piknik</span>
-                    <span class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs  hover:bg-primary/40 transition-colors cursor-pointer">Grill</span>
+                    @forelse ($categories as $cat)
+                        <a href="/rental?category={{ urlencode($cat) }}"
+                           class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs hover:bg-primary/40 transition-colors cursor-pointer capitalize">
+                            {{ $cat }}
+                        </a>
+                    @empty
+                        <span class="text-stone-400 text-sm">Belum ada kategori tersedia.</span>
+                    @endforelse
                 </div>
             </div>
 
             <div class="w-full  z-10 mt-6 inline-flex justify-center items-center">
-                <a href="/rental" class="w-full  py-4 bg-yellow-500 hover:bg-yellow-400 rounded-xl text-center text-zinc-800 text-base font-bold transition-colors shadow-md">
+                <a href="/rental" class="w-full py-4 bg-linear-to-b from-blue-300 to-sky-600 hover:from-blue-400 hover:to-sky-700 hover:scale-[1.02] hover:shadow-lg rounded-xl text-center text-white text-base font-bold transition-all duration-300 shadow-md">
                     Jelajahi Semua Kategori
                 </a>
             </div>

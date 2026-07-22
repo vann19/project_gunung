@@ -4,32 +4,32 @@
     $items = $items ?? [
         [
             'icon'  => 'rental.svg',
-            'title' => 'Rental Alat',
-            'desc'  => 'Gear for every climb.',
+            'title' => __('home.menu_rental_title'),
+            'desc'  => __('home.menu_rental_desc'),
             'href'  => '/rental',
         ],
         [
             'icon'  => 'cuci.svg',
-            'title' => 'Cuci & Perawatan',
-            'desc'  => 'Professional gear maintenance.',
+            'title' => __('home.menu_cuci_title'),
+            'desc'  => __('home.menu_cuci_desc'),
             'href'  => '/service/cuci-alat',
         ],
         [
             'icon'  => 'open trip.svg',
-            'title' => 'Open Trip',
-            'desc'  => 'Join collective expeditions.',
+            'title' => __('home.menu_trip_title'),
+            'desc'  => __('home.menu_trip_desc'),
             'href'  => '/service/open-trip',
         ],
         [
             'icon'  => 'guide.svg',
-            'title' => 'Guide Pendakian',
-            'desc'  => 'Expert certified guides.',
-            'href'  => '/service/open-trip',
+            'title' => __('home.menu_guide_title'),
+            'desc'  => __('home.menu_guide_desc'),
+            'href'  => '/service/open-trip?tab=guide',
         ],
         [
             'icon'  => 'market biru.svg',
-            'title' => 'Marketplace Second',
-            'desc'  => 'Quality pre-owned technical gear.',
+            'title' => __('home.menu_market_title'),
+            'desc'  => __('home.menu_market_desc'),
             'href'  => '/service/marketplace',
         ],
     ];

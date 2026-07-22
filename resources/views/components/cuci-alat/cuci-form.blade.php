@@ -1,5 +1,19 @@
+@props(['packages' => null])
+@php
+    $packages = $packages ?? \App\Models\CuciAlat::latest()->get();
+@endphp
 <div id="detail-barang" class="w-full bg-white py-16 lg:py-20 px-6 scroll-mt-24">
-    <form action="#" method="POST" class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12" x-data="{ paket: 'reproofing' }">
+    <form action="/service/cuci-alat" method="POST" class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12"
+        x-data="{
+            paket: '{{ $packages->first()?->id ?? '' }}',
+            items: [{ jenis_alat: '', jumlah: 1, catatan: '' }],
+            addItem() {
+                this.items.push({ jenis_alat: '', jumlah: 1, catatan: '' });
+            },
+            removeItem(index) {
+                if (this.items.length > 1) this.items.splice(index, 1);
+            }
+        }">
         @csrf
 
         {{-- ============ KIRI: Form Detail Barang ============ --}}
@@ -17,33 +31,70 @@
                     <input type="text" name="nama" id="nama" placeholder="Nama lengkap Anda" class="input" />
                 </div>
 
-                {{-- Jenis Alat & Jumlah --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="jenis_alat" class="block text-sm font-medium text-gray-700 mb-2">Jenis Alat</label>
-                        <div class="relative">
-                            <select name="jenis_alat" id="jenis_alat" class="input appearance-none pr-10">
-                                <option value="">Pilih Alat</option>
-                                <option value="tenda">Tenda</option>
-                                <option value="carrier">Carrier / Tas</option>
-                                <option value="sleeping_bag">Sleeping Bag</option>
-                                <option value="jaket">Jaket Gore-Tex</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                            <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                {{-- Daftar Barang --}}
+                <div class="flex flex-col gap-4">
+                    <template x-for="(item, index) in items" :key="index">
+                        <div class="flex flex-col gap-4 p-4 border border-gray-200 rounded-xl relative">
+
+                            {{-- Label nomor barang + tombol hapus --}}
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-700" x-text="'Barang #' + (index + 1)"></span>
+                                <button
+                                    type="button"
+                                    x-show="items.length > 1"
+                                    @click="removeItem(index)"
+                                    class="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Hapus
+                                </button>
+                            </div>
+
+                            {{-- Jenis Alat & Jumlah --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Alat</label>
+                                    <div class="relative">
+                                        <select :name="'items[' + index + '][jenis_alat]'" x-model="item.jenis_alat" class="input appearance-none pr-10">
+                                            <option value="">Pilih Alat</option>
+                                            <option value="tenda">Tenda</option>
+                                            <option value="carrier">Carrier / Tas</option>
+                                            <option value="sleeping_bag">Sleeping Bag</option>
+                                            <option value="jaket">Jaket Gore-Tex</option>
+                                            <option value="lainnya">Lainnya</option>
+                                        </select>
+                                        <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
+                                    <input type="number" :name="'items[' + index + '][jumlah]'" x-model="item.jumlah" min="1" class="input" />
+                                </div>
+                            </div>
+
+                            {{-- Catatan --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Khusus (Noda/Kerusakan)</label>
+                                <textarea :name="'items[' + index + '][catatan]'" x-model="item.catatan" rows="3"
+                                    placeholder="Contoh: Ada noda oli di bagian bawah tenda atau jahitan lepas di bagian bahu jaket..."
+                                    class="input resize-none"></textarea>
+                            </div>
+
                         </div>
-                    </div>
-                    <div>
-                        <label for="jumlah" class="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
-                        <input type="number" name="jumlah" id="jumlah" min="1" value="1" class="input" />
-                    </div>
+                    </template>
                 </div>
 
-                {{-- Catatan Khusus --}}
-                <div>
-                    <label for="catatan" class="block text-sm font-medium text-gray-700 mb-2">Catatan Khusus (Noda/Kerusakan)</label>
-                    <textarea name="catatan" id="catatan" rows="4" placeholder="Contoh: Ada noda oli di bagian bawah tenda atau jahitan lepas di bagian bahu jaket..." class="input resize-none"></textarea>
-                </div>
+                {{-- Tombol Tambah Barang --}}
+                <button type="button" @click="addItem()"
+                    class="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm font-medium text-gray-500 hover:border-primary hover:text-primary transition-colors cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Tambah Barang
+                </button>
 
                 {{-- Info Box --}}
                 <div class="flex items-start gap-3 bg-gray-100 rounded-xl p-4">
@@ -97,60 +148,32 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Pilih Paket</h2>
 
             <div class="flex flex-col gap-4 mb-6">
-
-                {{-- Deep Clean --}}
-                <label class="relative block cursor-pointer">
-                    <input type="radio" name="paket" value="deep_clean" x-model="paket" class="sr-only" />
-                    <div class="card p-5" :class="paket === 'deep_clean' ? 'border-primary ring-1 ring-primary' : 'border-gray-100'">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-900">Deep Clean</h3>
-                            <span class="text-gray-400 text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-wide">3-4 Hari</span>
+                @foreach ($packages as $pkg)
+                    @php
+                        $pkgId = $pkg['id'];
+                        $isRecommended = $pkg['is_recommended'] ?? false;
+                    @endphp
+                    <label class="relative block cursor-pointer">
+                        <input type="radio" name="paket" value="{{ $pkgId }}" x-model="paket" class="sr-only" />
+                        <div class="card p-5" :class="paket == '{{ $pkgId }}' ? 'border-primary ring-1 ring-primary' : 'border-gray-100'">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">{{ $pkg['name'] }}</h3>
+                                @if($isRecommended)
+                                    <span class="px-2 py-1 bg-secondary-400 rounded-sm text-surface-dark text-[10px] font-bold font-['JetBrains_Mono'] uppercase tracking-wide">Rekomendasi</span>
+                                @else
+                                    <span class="text-gray-400 text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-wide">{{ $pkg['duration'] }}</span>
+                                @endif
+                            </div>
+                            <p class="text-gray-500 text-sm leading-6 mb-4">{{ $pkg['description'] }}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-primary font-bold">{{ $pkg['price'] }} <span class="text-gray-400 font-normal text-sm">{{ $pkg['unit'] }}</span></span>
+                                <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" :class="paket == '{{ $pkgId }}' ? 'border-primary' : 'border-gray-300'">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary" x-show="paket == '{{ $pkgId }}'"></span>
+                                </span>
+                            </div>
                         </div>
-                        <p class="text-gray-500 text-sm leading-6 mb-4">Pembersihan menyeluruh, sanitasi anti-bakteri, dan penghilangan bau.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-primary font-bold">Rp 75.000 <span class="text-gray-400 font-normal text-sm">/ item</span></span>
-                            <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" :class="paket === 'deep_clean' ? 'border-primary' : 'border-gray-300'">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary" x-show="paket === 'deep_clean'"></span>
-                            </span>
-                        </div>
-                    </div>
-                </label>
-
-                {{-- Reproofing DWR --}}
-                <label class="relative block cursor-pointer">
-                    <input type="radio" name="paket" value="reproofing" x-model="paket" class="sr-only" />
-                    <div class="card p-5" :class="paket === 'reproofing' ? 'border-primary ring-1 ring-primary' : 'border-gray-100'">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-900">Reproofing DWR</h3>
-                            <span class="px-2 py-1 bg-secondary-400 rounded-sm text-surface-dark text-[10px] font-bold font-['JetBrains_Mono'] uppercase tracking-wide">Rekomendasi</span>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-6 mb-4">Deep Clean + Pelapisan ulang water repellent (DWR) berkualitas tinggi.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-primary font-bold">Rp 125.000 <span class="text-gray-400 font-normal text-sm">/ item</span></span>
-                            <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" :class="paket === 'reproofing' ? 'border-primary' : 'border-gray-300'">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary" x-show="paket === 'reproofing'"></span>
-                            </span>
-                        </div>
-                    </div>
-                </label>
-
-                {{-- Express --}}
-                <label class="relative block cursor-pointer">
-                    <input type="radio" name="paket" value="express" x-model="paket" class="sr-only" />
-                    <div class="card p-5" :class="paket === 'express' ? 'border-primary ring-1 ring-primary' : 'border-gray-100'">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-900">Express</h3>
-                            <span class="text-gray-400 text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-wide">24 Jam</span>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-6 mb-4">Layanan prioritas untuk kebutuhan mendadak. Selesai dalam 1 hari.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-primary font-bold">Rp 150.000 <span class="text-gray-400 font-normal text-sm">/ item</span></span>
-                            <span class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" :class="paket === 'express' ? 'border-primary' : 'border-gray-300'">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary" x-show="paket === 'express'"></span>
-                            </span>
-                        </div>
-                    </div>
-                </label>
+                    </label>
+                @endforeach
             </div>
 
             <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg font-medium text-base text-white transition-all duration-200 cursor-pointer active:scale-95 shadow-sm" style="background-color: #005E97;">
