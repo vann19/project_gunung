@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PendakiBergabung;
+use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,13 @@ use Illuminate\View\View;
 
 class PendakiBergabungController extends Controller
 {
+    protected CloudinaryService $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
+
     public function index(Request $request): View
     {
         $query = PendakiBergabung::query();
@@ -36,14 +44,18 @@ class PendakiBergabungController extends Controller
             'bg_class'   => 'required|string|max:200',
             'text_class' => 'required|string|max:100',
             'urutan'     => 'nullable|integer|min:0',
-            'foto'       => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'foto'       => 'nullable|image|mimes:jpeg,jpg,png,webp|max:10240',
         ]);
 
         $validated['urutan'] = $validated['urutan'] ?? 0;
 
         if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('pendaki', 'public');
-            $validated['foto'] = $path;
+            try {
+                $validated['foto'] = $this->cloudinaryService->upload($request->file('foto'), 'pendaki');
+            } catch (\Throwable $e) {
+                $path = $request->file('foto')->store('pendaki', 'public');
+                $validated['foto'] = '/storage/' . $path;
+            }
         }
 
         PendakiBergabung::create($validated);
@@ -61,7 +73,7 @@ class PendakiBergabungController extends Controller
             'bg_class'   => 'required|string|max:200',
             'text_class' => 'required|string|max:100',
             'urutan'     => 'nullable|integer|min:0',
-            'foto'       => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'foto'       => 'nullable|image|mimes:jpeg,jpg,png,webp|max:10240',
         ]);
 
         $validated['urutan'] = $validated['urutan'] ?? 0;
@@ -69,15 +81,27 @@ class PendakiBergabungController extends Controller
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
             if ($pendakiBergabung->foto) {
-                Storage::disk('public')->delete($pendakiBergabung->foto);
+                if ($this->cloudinaryService->isCloudinaryUrl($pendakiBergabung->foto)) {
+                    $this->cloudinaryService->delete($pendakiBergabung->foto);
+                } else {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $pendakiBergabung->foto));
+                }
             }
-            $path = $request->file('foto')->store('pendaki', 'public');
-            $validated['foto'] = $path;
+            try {
+                $validated['foto'] = $this->cloudinaryService->upload($request->file('foto'), 'pendaki');
+            } catch (\Throwable $e) {
+                $path = $request->file('foto')->store('pendaki', 'public');
+                $validated['foto'] = '/storage/' . $path;
+            }
         }
 
         // Hapus foto jika di-request
         if ($request->input('hapus_foto') === '1' && $pendakiBergabung->foto) {
-            Storage::disk('public')->delete($pendakiBergabung->foto);
+            if ($this->cloudinaryService->isCloudinaryUrl($pendakiBergabung->foto)) {
+                $this->cloudinaryService->delete($pendakiBergabung->foto);
+            } else {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $pendakiBergabung->foto));
+            }
             $validated['foto'] = null;
         }
 
@@ -89,9 +113,13 @@ class PendakiBergabungController extends Controller
 
     public function destroy(PendakiBergabung $pendakiBergabung): RedirectResponse
     {
-        // Hapus foto dari storage jika ada
+        // Hapus foto jika ada
         if ($pendakiBergabung->foto) {
-            Storage::disk('public')->delete($pendakiBergabung->foto);
+            if ($this->cloudinaryService->isCloudinaryUrl($pendakiBergabung->foto)) {
+                $this->cloudinaryService->delete($pendakiBergabung->foto);
+            } else {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $pendakiBergabung->foto));
+            }
         }
 
         $pendakiBergabung->delete();
