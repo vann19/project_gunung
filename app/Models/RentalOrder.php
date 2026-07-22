@@ -39,10 +39,11 @@ class RentalOrder extends Model
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            'confirmed' => 'Terkonfirmasi',
-            'completed' => 'Selesai / Dikembalikan',
+            'confirmed' => 'Barang Sewa',
+            'washing' => 'Barang Sedang Dicuci',
+            'completed' => 'Barang Ready',
             'cancelled' => 'Dibatalkan',
-            default => 'Menunggu Pembayaran / Konfirmasi',
+            default => 'Menunggu Konfirmasi',
         };
     }
 
@@ -50,6 +51,7 @@ class RentalOrder extends Model
     {
         return match ($this->status) {
             'confirmed' => 'bg-blue-100 text-blue-800 border-blue-200',
+            'washing' => 'bg-cyan-100 text-cyan-800 border-cyan-200',
             'completed' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
             'cancelled' => 'bg-rose-100 text-rose-800 border-rose-200',
             default => 'bg-amber-100 text-amber-800 border-amber-200',

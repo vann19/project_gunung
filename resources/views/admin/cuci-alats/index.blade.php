@@ -39,7 +39,7 @@
 
                         {{-- Gambar --}}
                         <div class="relative h-44 bg-slate-100 overflow-hidden">
-                            <img src="{{ $item->image ? asset($item->image) : asset('img/Camping gear setup.png') }}"
+                            <img src="{{ img_url($item->image, 'img/Camping gear setup.png') }}"
                                  alt="{{ $item->name }}"
                                  class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>

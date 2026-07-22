@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\RentalEquipment;
+use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Intervention\Image\Laravel\Facades\Image;
 
 class RentalController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary) {}
+
     public function index(Request $request): View
     {
         $query = RentalEquipment::query()->with('variants');
@@ -76,36 +77,21 @@ class RentalController extends Controller
         ]);
 
         $validated['is_popular'] = $request->has('is_popular');
-        
         $validated['specifications'] = [];
 
+        // Upload gambar utama ke Cloudinary
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-            $path = 'rentals/' . $filename;
-            
-            $img = Image::decode($file);
-            $img->scaleDown(width: 1200, height: 1200);
-            Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-            
-            $validated['image'] = '/storage/' . $path;
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'rentals');
         } else {
             $validated['image'] = '/img/camping.png';
         }
 
+        // Upload gallery ke Cloudinary
         if ($request->hasFile('gallery_images')) {
-            $gallery = [];
-            foreach ($request->file('gallery_images') as $file) {
-                $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-                $path = 'rentals/gallery/' . $filename;
-                
-                $img = Image::decode($file);
-                $img->scaleDown(width: 1200, height: 1200);
-                Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-                
-                $gallery[] = '/storage/' . $path;
-            }
-            $validated['gallery_images'] = $gallery;
+            $validated['gallery_images'] = $this->cloudinary->uploadMultiple(
+                $request->file('gallery_images'),
+                'rentals/gallery'
+            );
         } else {
             $validated['gallery_images'] = [];
         }
@@ -118,20 +104,14 @@ class RentalController extends Controller
                 if (!empty(trim($v['name'] ?? ''))) {
                     $variantImage = null;
                     if ($request->hasFile("variants.{$index}.image_file")) {
-                        $file = $request->file("variants.{$index}.image_file");
-                        $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-                        $path = 'rentals/variants/' . $filename;
-                        
-                        $image = Image::decode($file);
-                        // Scale down to max 1200px width/height and encode as JPEG with 75% quality
-                        $image->scaleDown(width: 1200, height: 1200);
-                        Storage::disk('public')->put($path, (string) $image->encodeUsingFileExtension('jpg', 75));
-                        
-                        $variantImage = '/storage/' . $path;
+                        $variantImage = $this->cloudinary->upload(
+                            $request->file("variants.{$index}.image_file"),
+                            'rentals/variants'
+                        );
                     }
 
                     $sku = trim($v['sku'] ?? '');
-                    
+
                     $variantSpecs = [];
                     if (!empty($v['specifications']) && is_array($v['specifications'])) {
                         $filtered = array_filter($v['specifications'], function ($spec) {
@@ -142,12 +122,12 @@ class RentalController extends Controller
 
                     try {
                         $equipment->variants()->create([
-                            'name' => trim($v['name'] ?? ''),
-                            'sku' => $sku === '' ? null : $sku,
-                            'stock' => intval($v['stock'] ?? 0),
-                            'image' => $variantImage,
+                            'name'           => trim($v['name'] ?? ''),
+                            'sku'            => $sku === '' ? null : $sku,
+                            'stock'          => intval($v['stock'] ?? 0),
+                            'image'          => $variantImage,
                             'price_override' => trim($v['price_override'] ?? ''),
-                            'is_active' => true,
+                            'is_active'      => true,
                             'specifications' => $variantSpecs,
                         ]);
                     } catch (\Illuminate\Database\QueryException $e) {
@@ -187,61 +167,41 @@ class RentalController extends Controller
         ]);
 
         $validated['is_popular'] = $request->has('is_popular');
-        
         $validated['specifications'] = [];
 
+        // Upload gambar utama baru ke Cloudinary, hapus yang lama
         if ($request->hasFile('image')) {
-            if ($rental->image && str_starts_with($rental->image, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $rental->image));
+            if ($rental->image && $this->cloudinary->isCloudinaryUrl($rental->image)) {
+                $this->cloudinary->delete($rental->image);
             }
-            
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-            $path = 'rentals/' . $filename;
-            
-            $img = Image::decode($file);
-            $img->scaleDown(width: 1200, height: 1200);
-            Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-            
-            $validated['image'] = '/storage/' . $path;
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'rentals');
         } else {
             unset($validated['image']);
         }
 
+        // Tambahkan gallery baru ke Cloudinary (append ke yang sudah ada)
         if ($request->hasFile('gallery_images')) {
-            $gallery = $rental->gallery_images ?? [];
-            foreach ($request->file('gallery_images') as $file) {
-                $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-                $path = 'rentals/gallery/' . $filename;
-                
-                $img = Image::decode($file);
-                $img->scaleDown(width: 1200, height: 1200);
-                Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-                
-                $gallery[] = '/storage/' . $path;
-            }
-            $validated['gallery_images'] = $gallery;
+            $existingGallery = $rental->gallery_images ?? [];
+            $newUrls = $this->cloudinary->uploadMultiple(
+                $request->file('gallery_images'),
+                'rentals/gallery'
+            );
+            $validated['gallery_images'] = array_merge($existingGallery, $newUrls);
         }
 
         $rental->update($validated);
 
-        // Process variants: Delete old and recreate to avoid complex sync, but preserve images if possible
+        // Process variants: hapus lama, buat ulang
         if ($request->has('variants') && is_array($request->input('variants'))) {
             $rental->variants()->delete();
             foreach ($request->input('variants') as $index => $v) {
                 if (!empty(trim($v['name'] ?? ''))) {
                     $variantImage = $v['existing_image'] ?? null;
                     if ($request->hasFile("variants.{$index}.image_file")) {
-                        $file = $request->file("variants.{$index}.image_file");
-                        $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-                        $path = 'rentals/variants/' . $filename;
-                        
-                        $image = Image::decode($file);
-                        // Scale down to max 1200px width/height and encode as JPEG with 75% quality
-                        $image->scaleDown(width: 1200, height: 1200);
-                        Storage::disk('public')->put($path, (string) $image->encodeUsingFileExtension('jpg', 75));
-                        
-                        $variantImage = '/storage/' . $path;
+                        $variantImage = $this->cloudinary->upload(
+                            $request->file("variants.{$index}.image_file"),
+                            'rentals/variants'
+                        );
                     }
 
                     $sku = trim($v['sku'] ?? '');
@@ -256,12 +216,12 @@ class RentalController extends Controller
 
                     try {
                         $rental->variants()->create([
-                            'name' => trim($v['name'] ?? ''),
-                            'sku' => $sku === '' ? null : $sku,
-                            'stock' => intval($v['stock'] ?? 0),
-                            'image' => $variantImage,
+                            'name'           => trim($v['name'] ?? ''),
+                            'sku'            => $sku === '' ? null : $sku,
+                            'stock'          => intval($v['stock'] ?? 0),
+                            'image'          => $variantImage,
                             'price_override' => trim($v['price_override'] ?? ''),
-                            'is_active' => true,
+                            'is_active'      => true,
                             'specifications' => $variantSpecs,
                         ]);
                     } catch (\Illuminate\Database\QueryException $e) {
@@ -279,13 +239,15 @@ class RentalController extends Controller
 
     public function destroy(RentalEquipment $rental): RedirectResponse
     {
-        if ($rental->image && str_starts_with($rental->image, '/storage/')) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $rental->image));
+        // Hapus gambar utama dari Cloudinary
+        if ($rental->image && $this->cloudinary->isCloudinaryUrl($rental->image)) {
+            $this->cloudinary->delete($rental->image);
         }
+        // Hapus gallery dari Cloudinary
         if (is_array($rental->gallery_images)) {
             foreach ($rental->gallery_images as $img) {
-                if (str_starts_with($img, '/storage/')) {
-                    Storage::disk('public')->delete(str_replace('/storage/', '', $img));
+                if ($this->cloudinary->isCloudinaryUrl($img)) {
+                    $this->cloudinary->delete($img);
                 }
             }
         }
@@ -298,19 +260,19 @@ class RentalController extends Controller
     {
         $rental->update(['is_visible' => !$rental->is_visible]);
         $status = $rental->is_visible ? 'ditampilkan' : 'disembunyikan';
-        
+
         return back()->with('success', "Alat rental '{$rental->title}' berhasil {$status} dari katalog publik.");
     }
 
     public function sellToMarketplace(Request $request, RentalEquipment $rental): RedirectResponse
     {
         $validated = $request->validate([
-            'variant_id' => 'required|exists:rental_equipment_variants,id',
-            'qty' => 'required|integer|min:1',
-            'price' => 'required|string|max:100',
-            'old_price' => 'nullable|string|max:100',
+            'variant_id'           => 'required|exists:rental_equipment_variants,id',
+            'qty'                  => 'required|integer|min:1',
+            'price'                => 'required|string|max:100',
+            'old_price'            => 'nullable|string|max:100',
             'marketplace_category' => 'required|string|max:100',
-            'condition_badge' => 'nullable|string|max:100',
+            'condition_badge'      => 'nullable|string|max:100',
         ]);
 
         $variant = $rental->variants()->where('id', $validated['variant_id'])->firstOrFail();
@@ -333,17 +295,17 @@ class RentalController extends Controller
 
         // Tambahkan ke Marketplace
         \App\Models\MarketplaceItem::create([
-            'title' => $rental->title . ($variant->color ? " - {$variant->color}" : '') . ($variant->size ? " ({$variant->size})" : ''),
-            'category' => $validated['marketplace_category'],
-            'condition_badge' => $conditionBadge,
-            'badge_class' => $badgeClass,
-            'spec' => 'Barang Bekas Rental',
-            'description' => "Barang ex-rental (pernah disewakan).\n\n" . $rental->description,
-            'whatsapp_number' => null,
-            'price' => $validated['price'],
-            'old_price' => $validated['old_price'] ?? null,
-            'stock' => $validated['qty'],
-            'image' => $variant->image ?: $rental->main_image,
+            'title'            => $rental->title . ($variant->color ? " - {$variant->color}" : '') . ($variant->size ? " ({$variant->size})" : ''),
+            'category'         => $validated['marketplace_category'],
+            'condition_badge'  => $conditionBadge,
+            'badge_class'      => $badgeClass,
+            'spec'             => 'Barang Bekas Rental',
+            'description'      => "Barang ex-rental (pernah disewakan).\n\n" . $rental->description,
+            'whatsapp_number'  => null,
+            'price'            => $validated['price'],
+            'old_price'        => $validated['old_price'] ?? null,
+            'stock'            => $validated['qty'],
+            'image'            => $variant->image ?: $rental->main_image,
         ]);
 
         return back()->with('success', "Berhasil memindahkan {$validated['qty']} stok '{$rental->title}' ke Marketplace!");

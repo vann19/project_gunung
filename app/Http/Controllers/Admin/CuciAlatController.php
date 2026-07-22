@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CuciAlat;
+use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CuciAlatController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary) {}
+
     public function index(Request $request): View
     {
         $query = CuciAlat::query();
@@ -19,7 +22,7 @@ class CuciAlatController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $packages = $query->latest()->get();
+        $packages      = $query->latest()->get();
         $totalPackages = CuciAlat::count();
 
         return view('admin.cuci-alats.index', compact('packages', 'totalPackages'));
@@ -28,20 +31,18 @@ class CuciAlatController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'duration' => 'required|string|max:100',
+            'name'        => 'required|string|max:255',
+            'duration'    => 'required|string|max:100',
             'description' => 'required|string',
-            'price' => 'required|string|max:100',
-            'unit' => 'required|string|max:50',
-            'image' => 'nullable|image|max:2048',
+            'price'       => 'required|string|max:100',
+            'unit'        => 'required|string|max:50',
+            'image'       => 'nullable|image|max:2048',
         ]);
 
         $validated['is_recommended'] = $request->has('is_recommended');
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('cuci-alats', 'public');
-            $validated['image'] = '/storage/' . $path;
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'cuci-alats');
         } else {
             $validated['image'] = '/img/Camping gear setup.png';
         }
@@ -54,26 +55,23 @@ class CuciAlatController extends Controller
     public function update(Request $request, CuciAlat $cuci_alat): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'duration' => 'required|string|max:100',
+            'name'        => 'required|string|max:255',
+            'duration'    => 'required|string|max:100',
             'description' => 'required|string',
-            'price' => 'required|string|max:100',
-            'unit' => 'required|string|max:50',
-            'image' => 'nullable|image|max:2048',
+            'price'       => 'required|string|max:100',
+            'unit'        => 'required|string|max:50',
+            'image'       => 'nullable|image|max:2048',
         ]);
 
         $validated['is_recommended'] = $request->has('is_recommended');
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($cuci_alat->image && str_starts_with($cuci_alat->image, '/storage/')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $cuci_alat->image));
+            // Hapus gambar lama dari Cloudinary
+            if ($cuci_alat->image && $this->cloudinary->isCloudinaryUrl($cuci_alat->image)) {
+                $this->cloudinary->delete($cuci_alat->image);
             }
-            $path = $request->file('image')->store('cuci-alats', 'public');
-            $validated['image'] = '/storage/' . $path;
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'cuci-alats');
         } else {
-            // Keep existing image if not updated
             unset($validated['image']);
         }
 
@@ -84,11 +82,9 @@ class CuciAlatController extends Controller
 
     public function destroy(CuciAlat $cuci_alat): RedirectResponse
     {
-        // Delete image if exists
-        if ($cuci_alat->image && str_starts_with($cuci_alat->image, '/storage/')) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $cuci_alat->image));
+        if ($cuci_alat->image && $this->cloudinary->isCloudinaryUrl($cuci_alat->image)) {
+            $this->cloudinary->delete($cuci_alat->image);
         }
-        
         $cuci_alat->delete();
 
         return redirect()->route('admin.cuci-alats.index')->with('success', 'Paket Cuci Alat berhasil dihapus!');

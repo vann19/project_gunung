@@ -20,7 +20,7 @@
 
                             {{-- Gambar --}}
                             <div class="relative h-44 overflow-hidden bg-gray-100">
-                                <img src="{{ $pkg->image ? asset($pkg->image) : asset('img/Camping gear setup.png') }}"
+                                <img src="{{ img_url($pkg->image, 'img/Camping gear setup.png') }}"
                                      alt="{{ $pkg->name }}"
                                      class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>

@@ -26,6 +26,7 @@
     <meta property="twitter:image" content="{{ asset('img/logo.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>[x-cloak] { display: none !important; }</style>
     @stack('styles')
 </head>
 <body class="h-full antialiased bg-surface-soft text-gray-900">

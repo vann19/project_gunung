@@ -34,21 +34,25 @@ class RentalOrderController extends Controller
         $totalOrders = RentalOrder::count();
         $pendingCount = RentalOrder::where('status', 'pending')->count();
         $confirmedCount = RentalOrder::where('status', 'confirmed')->count();
+        $washingCount = RentalOrder::where('status', 'washing')->count();
         $completedCount = RentalOrder::where('status', 'completed')->count();
+        $cancelledCount = RentalOrder::where('status', 'cancelled')->count();
 
         return view('admin.rental-orders.index', compact(
             'orders',
             'totalOrders',
             'pendingCount',
             'confirmedCount',
-            'completedCount'
+            'washingCount',
+            'completedCount',
+            'cancelledCount'
         ));
     }
 
     public function update(Request $request, RentalOrder $rental_order): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,confirmed,completed,cancelled',
+            'status' => 'required|in:pending,confirmed,washing,completed,cancelled',
             'tanggal_kembali' => 'nullable|date_format:Y-m-d\TH:i',
             'catatan' => 'nullable|string|max:500',
         ]);
@@ -60,7 +64,9 @@ class RentalOrderController extends Controller
         $oldStatus = $rental_order->status;
         $rental_order->update($validated);
 
-        if ($oldStatus !== 'cancelled' && $validated['status'] === 'cancelled') {
+        // Increment stock when order is completed or cancelled (items returned)
+        if (($oldStatus !== 'completed' && $validated['status'] === 'completed') ||
+            ($oldStatus !== 'cancelled' && $validated['status'] === 'cancelled')) {
             $items = is_string($rental_order->items) ? json_decode($rental_order->items, true) : $rental_order->items;
             if (is_array($items)) {
                 foreach ($items as $item) {

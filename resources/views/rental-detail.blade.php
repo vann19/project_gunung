@@ -29,7 +29,7 @@
             <div x-data="{
                     quantity: 1,
                     selectedVariantId: '',
-                    mainImage: '{{ asset($product->main_image) }}',
+                    mainImage: '{{ img_url($product->main_image) }}',
                     variants: {{ \Illuminate\Support\Js::from($product->variants ?? []) }},
                     specs: {{ \Illuminate\Support\Js::from($product->specifications ?? []) }},
                     hasVariants: {{ ($product->variants && $product->variants->count() > 0) ? 'true' : 'false' }},
@@ -79,7 +79,7 @@
                             if (val && val.image) {
                                 this.mainImage = val.image.startsWith('/') ? val.image : '/' + val.image;
                             } else {
-                                this.mainImage = '{{ asset($product->main_image) }}';
+                                this.mainImage = '{{ img_url($product->main_image) }}';
                             }
                             // reset quantity when variant changes (optional)
                             this.quantity = 1;
@@ -161,7 +161,7 @@
                                                 class="px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center gap-2">
                                                 
                                                 <template x-if="variant.image">
-                                                    <img :src="variant.image.startsWith('/') ? variant.image : '/' + variant.image" class="w-5 h-5 rounded object-cover border border-slate-200">
+                                                    <!-- <img :src="variant.image.startsWith('/') ? variant.image : '/' + variant.image" class="w-5 h-5 rounded object-cover border border-slate-200"> -->
                                                 </template>
                                                 <span x-text="variant.name"></span>
                                         </button>
@@ -204,7 +204,7 @@
                                     slug: '{{ $product->slug }}',
                                     title: '{{ addslashes($product->title) }}',
                                     price: currentPrice,
-                                    image: (currentVariant && currentVariant.image ? (currentVariant.image.startsWith('/') ? currentVariant.image : '/' + currentVariant.image) : '{{ asset($product->image) }}'),
+                                    image: (currentVariant && currentVariant.image ? (currentVariant.image.startsWith('http') ? currentVariant.image : (currentVariant.image.startsWith('/') ? currentVariant.image : '/' + currentVariant.image)) : '{{ img_url($product->image) }}'),
                                     category: '{{ $product->category }}',
                                     variant_id: currentVariant ? currentVariant.id : null,
                                     variant_name: currentVariant ? currentVariant.name : null,

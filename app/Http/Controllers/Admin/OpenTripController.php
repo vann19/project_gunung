@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\OpenTrip;
+use App\Services\CloudinaryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Intervention\Image\Laravel\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 
 class OpenTripController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary) {}
+
     public function index(Request $request): View
     {
         $query = OpenTrip::query();
@@ -21,8 +22,8 @@ class OpenTripController extends Controller
             $query->where('title', 'like', "%{$search}%");
         }
 
-        $trips = $query->latest()->get();
-        $totalTrips = OpenTrip::count();
+        $trips         = $query->latest()->get();
+        $totalTrips    = OpenTrip::count();
         $featuredCount = OpenTrip::where('is_featured', true)->count();
 
         return view('admin.open-trips.index', compact('trips', 'totalTrips', 'featuredCount'));
@@ -31,37 +32,27 @@ class OpenTripController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'badge' => 'required|string|max:100',
+            'title'       => 'required|string|max:255',
+            'badge'       => 'required|string|max:100',
             'badge_class' => 'required|string|max:255',
-            'slot' => 'required|integer|min:1',
-            'price' => 'required|string|max:100',
-            'image' => 'nullable|image|max:51200',
+            'slot'        => 'required|integer|min:1',
+            'price'       => 'required|string|max:100',
+            'image'       => 'nullable|image|max:51200',
         ], [
-            'image.max' => 'Ukuran gambar maksimal adalah 50MB.',
+            'image.max'   => 'Ukuran gambar maksimal adalah 50MB.',
             'image.image' => 'File harus berupa gambar.',
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-            $path = 'open-trips/' . $filename;
-            
-            $img = Image::decode($file);
-            $img->scaleDown(width: 1200, height: 1200);
-            Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-            
-            $validated['image'] = '/storage/' . $path;
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'open-trips');
         }
 
         $validated['is_featured'] = $request->has('is_featured');
 
-        // Handle features input (array or newline separated strings)
         if ($request->filled('features_text')) {
-            $lines = array_filter(array_map('trim', explode("\n", $request->input('features_text'))));
+            $lines    = array_filter(array_map('trim', explode("\n", $request->input('features_text'))));
             $features = [];
             foreach ($lines as $line) {
-                // Determine icon based on text keyword or default
                 $icon = 'tent';
                 if (stripos($line, 'transport') !== false || stripos($line, 'jemput') !== false || stripos($line, 'bus') !== false) {
                     $icon = 'transport';
@@ -76,9 +67,9 @@ class OpenTripController extends Controller
         } else {
             $validated['features'] = [
                 ['icon' => 'transport', 'label' => 'Transport PP dari Meeting Point'],
-                ['icon' => 'food', 'label' => 'Makan & Logistik Selama Pendakian'],
-                ['icon' => 'porter', 'label' => 'Porter Tim & Guide Sertifikasi APGI'],
-                ['icon' => 'tent', 'label' => 'Tenda & Perlengkapan Kelompok'],
+                ['icon' => 'food',      'label' => 'Makan & Logistik Selama Pendakian'],
+                ['icon' => 'porter',    'label' => 'Porter Tim & Guide Sertifikasi APGI'],
+                ['icon' => 'tent',      'label' => 'Tenda & Perlengkapan Kelompok'],
             ];
         }
 
@@ -90,38 +81,29 @@ class OpenTripController extends Controller
     public function update(Request $request, OpenTrip $open_trip): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'badge' => 'required|string|max:100',
+            'title'       => 'required|string|max:255',
+            'badge'       => 'required|string|max:100',
             'badge_class' => 'required|string|max:255',
-            'slot' => 'required|integer|min:1',
-            'price' => 'required|string|max:100',
-            'image' => 'nullable|image|max:51200',
+            'slot'        => 'required|integer|min:1',
+            'price'       => 'required|string|max:100',
+            'image'       => 'nullable|image|max:51200',
         ], [
-            'image.max' => 'Ukuran gambar maksimal adalah 50MB.',
+            'image.max'   => 'Ukuran gambar maksimal adalah 50MB.',
             'image.image' => 'File harus berupa gambar.',
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.jpg';
-            $path = 'open-trips/' . $filename;
-            
-            $img = Image::decode($file);
-            $img->scaleDown(width: 1200, height: 1200);
-            Storage::disk('public')->put($path, (string) $img->encodeUsingFileExtension('jpg', 75));
-            
-            $validated['image'] = '/storage/' . $path;
-            
-            // Delete old image if it's not a default one
-            if ($open_trip->image && str_starts_with($open_trip->image, '/storage/open-trips/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $open_trip->image));
+            // Hapus gambar lama dari Cloudinary
+            if ($open_trip->image && $this->cloudinary->isCloudinaryUrl($open_trip->image)) {
+                $this->cloudinary->delete($open_trip->image);
             }
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'open-trips');
         }
 
         $validated['is_featured'] = $request->has('is_featured');
 
         if ($request->filled('features_text')) {
-            $lines = array_filter(array_map('trim', explode("\n", $request->input('features_text'))));
+            $lines    = array_filter(array_map('trim', explode("\n", $request->input('features_text'))));
             $features = [];
             foreach ($lines as $line) {
                 $icon = 'tent';
@@ -144,10 +126,9 @@ class OpenTripController extends Controller
 
     public function destroy(OpenTrip $open_trip): RedirectResponse
     {
-        if ($open_trip->image && str_starts_with($open_trip->image, '/storage/open-trips/')) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $open_trip->image));
+        if ($open_trip->image && $this->cloudinary->isCloudinaryUrl($open_trip->image)) {
+            $this->cloudinary->delete($open_trip->image);
         }
-
         $open_trip->delete();
 
         return redirect()->route('admin.open-trips.index')->with('success', 'Jadwal Open Trip berhasil dihapus!');

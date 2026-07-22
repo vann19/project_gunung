@@ -189,7 +189,7 @@
                                 :category="$product->category"
                                 :price="$product->price"
                                 :description="$product->description"
-                                :image="asset($product->main_image)"
+                                :image="img_url($product->main_image)"
                                 :popular="$product->is_popular"
                                 :condition="$product->condition_badge ?? 'Baru'"
                                 :variants="$product->variants"

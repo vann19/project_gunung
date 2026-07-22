@@ -1,5 +1,11 @@
 @php
-    $slides = config('mountains.slides');
+    $slides = config('mountains.slides', []);
+    $defaults = [
+        0 => ['temp' => '8°C', 'weather' => 'cloudy', 'label' => 'Berawan'],
+        1 => ['temp' => '7°C', 'weather' => 'foggy', 'label' => 'Berkabut'],
+        2 => ['temp' => '5°C', 'weather' => 'cloudy', 'label' => 'Berawan'],
+        3 => ['temp' => '10°C', 'weather' => 'cloudy', 'label' => 'Berawan'],
+    ];
 @endphp
 
 <div
@@ -64,7 +70,7 @@
     @foreach ($slides as $index => $slide)
         <div
             class="absolute inset-0"
-            @if ($index > 0) style="display: none;" @endif
+            @if ($index > 0) x-cloak @endif
             x-show="active === {{ $index }}"
             x-transition:enter="transition-opacity ease-out duration-700"
             x-transition:enter-start="opacity-0"
@@ -107,8 +113,6 @@
                     <span class="text-zinc-800 text-base font-bold">{{ __('home.hero_cta_rent') }}</span>
                     <svg class="w-5 h-5 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
-
-              
             </div>
         </div>
     </div>
@@ -117,9 +121,12 @@
     <div class="absolute bottom-20 lg:bottom-12 left-4 right-4 lg:left-auto lg:right-12 z-20">
         <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-4 lg:p-6 flex items-center justify-between lg:justify-start gap-2 lg:gap-10 shadow-2xl overflow-x-auto">
             @foreach ($slides as $index => $slide)
+                @php
+                    $def = $defaults[$index] ?? $defaults[0];
+                @endphp
                 <div
                     class="flex items-center justify-between w-full gap-3 lg:gap-10"
-                    @if ($index > 0) style="display: none;" @endif
+                    @if ($index > 0) x-cloak @endif
                     x-show="active === {{ $index }}"
                     x-transition:enter="transition-opacity ease-out duration-300"
                     x-transition:enter-start="opacity-0"
@@ -143,9 +150,9 @@
                         <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_temp') }}</span>
                         <span
                             class="text-zinc-200 text-xl lg:text-3xl font-semibold tabular-nums"
-                            x-text="tempFor({{ $index }}, '—')"
+                            x-text="tempFor({{ $index }}, '{{ $def['temp'] }}')"
                             :class="weatherLoading && 'opacity-50 animate-pulse'"
-                        ></span>
+                        >{{ $def['temp'] }}</span>
                     </div>
 
                     <div class="w-px h-10 lg:h-12 bg-neutral-600/50 shrink-0"></div>
@@ -154,35 +161,34 @@
                         <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_weather') }}</span>
 
                         {{-- Cerah --}}
-                        <svg x-show="weatherType({{ $index }}) === 'sunny'" class="w-6 h-6 lg:w-8 lg:h-8 text-yellow-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zm10-8a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
+                        <svg x-show="weatherType({{ $index }}) === 'sunny'" @if($def['weather'] !== 'sunny') x-cloak @endif class="w-6 h-6 lg:w-8 lg:h-8 text-yellow-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 1 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zm10-8a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
                         </svg>
 
                         {{-- Hujan --}}
-                        <svg x-show="weatherType({{ $index }}) === 'rainy'" class="w-6 h-6 lg:w-8 lg:h-8 text-blue-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'rainy'" @if($def['weather'] !== 'rainy') x-cloak @endif class="w-6 h-6 lg:w-8 lg:h-8 text-blue-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Salju --}}
-                        <svg x-show="weatherType({{ $index }}) === 'snowy'" class="w-6 h-6 lg:w-8 lg:h-8 text-sky-200 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'snowy'" @if($def['weather'] !== 'snowy') x-cloak @endif class="w-6 h-6 lg:w-8 lg:h-8 text-sky-200 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Berkabut --}}
-                        <svg x-show="weatherType({{ $index }}) === 'foggy'" class="w-6 h-6 lg:w-8 lg:h-8 text-stone-400 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'foggy'" @if($def['weather'] !== 'foggy') x-cloak @endif class="w-6 h-6 lg:w-8 lg:h-8 text-stone-400 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Berawan (default) --}}
-                        <svg x-show="weatherType({{ $index }}) === 'cloudy'" class="w-6 h-6 lg:w-8 lg:h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'cloudy'" @if($def['weather'] !== 'cloudy') x-cloak @endif class="w-6 h-6 lg:w-8 lg:h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         <span
                             class="text-stone-400 text-[10px] font-['JetBrains_Mono'] mt-1 uppercase tracking-wide"
                             x-text="weatherLabel({{ $index }})"
-                            x-show="!weatherLoading && weatherLabel({{ $index }})"
-                        ></span>
+                        >{{ $def['label'] }}</span>
                     </div>
                 </div>
             @endforeach

@@ -85,7 +85,7 @@
 
                         <div class="w-56 h-56 bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-center relative mb-4 shadow-sm">
                             @if ($qrisImage)
-                                <img src="{{ asset($qrisImage) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
+                                <img src="{{ img_url($qrisImage) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
                             @else
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode('PAYMENT_' . $order->order_code) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
                                 <div class="absolute inset-0 m-auto w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md border border-slate-100">

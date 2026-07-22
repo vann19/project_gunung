@@ -50,7 +50,7 @@
 
                 <div class="w-64 h-64 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-4 flex items-center justify-center relative mb-4">
                     @if ($qrisImage)
-                        <img src="{{ asset($qrisImage) }}" alt="Foto QRIS Saat Ini" class="max-w-full max-h-full object-contain rounded-lg shadow-2xs">
+                        <img src="{{ img_url($qrisImage) }}" alt="Foto QRIS Saat Ini" class="max-w-full max-h-full object-contain rounded-lg shadow-2xs">
                     @else
                         <div class="text-slate-400 flex flex-col items-center">
                             <svg class="w-12 h-12 mb-2 stroke-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -62,7 +62,7 @@
                                     <div class="flex items-center gap-4">
                                         <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200 flex items-center justify-center">
                                             @if($item->image)
-                                                <img src="{{ asset($item->image) }}" alt="" class="w-full h-full object-cover">
+                                                <img src="{{ img_url($item->image) }}" alt="" class="w-full h-full object-cover">
                                             @else
                                                 <span class="text-xs text-slate-400">No img</span>
                                             @endif

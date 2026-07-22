@@ -3,7 +3,7 @@
     {{-- Hero Section --}}
     <section class="relative pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden bg-gray-900">
         @if($mountain->image)
-            <img src="{{ asset($mountain->image) }}" alt="{{ $mountain->name }}" class="absolute inset-0 w-full h-full object-cover opacity-40">
+            <img src="{{ img_url($mountain->image) }}" alt="{{ $mountain->name }}" class="absolute inset-0 w-full h-full object-cover opacity-40">
         @else
             <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-gray-900 opacity-80"></div>
         @endif

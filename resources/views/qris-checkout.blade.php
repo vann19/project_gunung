@@ -18,7 +18,7 @@
                     <div class="mb-8 pb-6 border-b border-dashed border-slate-200">
                         <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 font-['JetBrains_Mono']">Detail Pesanan</h2>
                         <div class="flex gap-4">
-                            <img src="{{ asset($product->image) }}" alt="{{ $product->title }}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 shrink-0">
+                            <img src="{{ img_url($product->image) }}" alt="{{ $product->title }}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 shrink-0">
                             <div>
                                 <h3 class="font-bold text-slate-800 leading-tight">{{ $product->title }}</h3>
                                 <p class="text-sm text-slate-500 capitalize mt-1">{{ $product->category }}</p>
@@ -33,7 +33,7 @@
                     <div class="flex flex-col items-center justify-center mb-8">
                         <div class="w-48 h-48 bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-center relative mb-4 shadow-sm shadow-slate-100">
                             @if ($qrisImage)
-                                <img src="{{ asset($qrisImage) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
+                                <img src="{{ img_url($qrisImage) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
                             @else
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode('MOCKUP_PAYMENT_' . $product->slug) }}" alt="QRIS Barcode" class="w-full h-full object-contain">
                                 <div class="absolute inset-0 m-auto w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-md">

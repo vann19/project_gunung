@@ -71,7 +71,7 @@
         @endif
 
         {{-- Stats Cards --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -103,12 +103,32 @@
             </div>
 
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block font-['JetBrains_Mono']">Dicuci</span>
+                    <span class="text-2xl font-black text-cyan-600 font-['Hanken_Grotesk']">{{ $washingCount }}</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <div>
                     <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block font-['JetBrains_Mono']">Selesai</span>
                     <span class="text-2xl font-black text-emerald-600 font-['Hanken_Grotesk']">{{ $completedCount }}</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block font-['JetBrains_Mono']">Dibatalkan</span>
+                    <span class="text-2xl font-black text-rose-600 font-['Hanken_Grotesk']">{{ $cancelledCount }}</span>
                 </div>
             </div>
         </div>
@@ -132,7 +152,7 @@
                     @endif
                     <div class="relative w-full md:w-72">
                         <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode, nama, WA, atau NIK..."
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode, nama, WA"
                                class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary w-full">
                     </div>
                     <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition">
@@ -157,11 +177,15 @@
                     </a>
                     <a href="{{ route('admin.rental-orders.index', ['status' => 'confirmed', 'search' => request('search')]) }}" 
                        class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition {{ request('status') == 'confirmed' ? 'bg-blue-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
-                        Terkonfirmasi
+                        Barang Sewa
+                    </a>
+                    <a href="{{ route('admin.rental-orders.index', ['status' => 'washing', 'search' => request('search')]) }}" 
+                       class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition {{ request('status') == 'washing' ? 'bg-cyan-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
+                        Dicuci
                     </a>
                     <a href="{{ route('admin.rental-orders.index', ['status' => 'completed', 'search' => request('search')]) }}" 
                        class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition {{ request('status') == 'completed' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
-                        Selesai
+                        Ready
                     </a>
                     <a href="{{ route('admin.rental-orders.index', ['status' => 'cancelled', 'search' => request('search')]) }}" 
                        class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition {{ request('status') == 'cancelled' ? 'bg-rose-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
@@ -400,10 +424,11 @@
                                     </label>
                                     <select name="status" id="edit_status" required
                                             class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                        <option value="pending">⏳ Menunggu Pembayaran / Konfirmasi</option>
-                                        <option value="confirmed">✅ Terkonfirmasi (Alat Siap / Diambil)</option>
-                                        <option value="completed">🏁 Selesai (Alat Telah Dikembalikan)</option>
-                                        <option value="cancelled">❌ Dibatalkan</option>
+                                        <option value="pending">Menunggu Konfirmasi</option>
+                                        <option value="confirmed">Barang Sewa</option>
+                                        <option value="washing">Barang Sedang Dicuci</option>
+                                        <option value="completed">Barang Ready</option>
+                                        <option value="cancelled">Dibatalkan</option>
                                     </select>
                                 </div>
 
