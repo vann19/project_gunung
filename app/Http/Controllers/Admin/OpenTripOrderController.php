@@ -14,8 +14,10 @@ class OpenTripOrderController extends Controller
         return view('admin.open-trip-orders.index', compact('orders'));
     }
 
-    public function updateStatus(Request $request, OpenTripOrder $order)
+    public function updateStatus(Request $request, $id)
     {
+        $order = OpenTripOrder::findOrFail($id);
+
         $request->validate([
             'status' => 'required|in:pending,paid,cancelled'
         ]);
@@ -27,14 +29,16 @@ class OpenTripOrderController extends Controller
         return back()->with('success', 'Status pesanan berhasil diperbarui.');
     }
 
-    public function destroy(OpenTripOrder $order)
+    public function destroy($id)
     {
-        // Hapus file
-        if ($order->foto_ktp) {
+        $order = OpenTripOrder::findOrFail($id);
+
+        // Hapus file jika tersimpan di storage
+        if ($order->foto_ktp && str_starts_with($order->foto_ktp, '/storage/')) {
             $path = str_replace('/storage/', '', $order->foto_ktp);
             \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
         }
-        if ($order->surat_sehat) {
+        if ($order->surat_sehat && str_starts_with($order->surat_sehat, '/storage/')) {
             $path = str_replace('/storage/', '', $order->surat_sehat);
             \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
         }
@@ -47,11 +51,11 @@ class OpenTripOrderController extends Controller
     {
         $orders = OpenTripOrder::all();
         foreach ($orders as $order) {
-            if ($order->foto_ktp) {
+            if ($order->foto_ktp && str_starts_with($order->foto_ktp, '/storage/')) {
                 $path = str_replace('/storage/', '', $order->foto_ktp);
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
             }
-            if ($order->surat_sehat) {
+            if ($order->surat_sehat && str_starts_with($order->surat_sehat, '/storage/')) {
                 $path = str_replace('/storage/', '', $order->surat_sehat);
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
             }
