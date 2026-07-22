@@ -72,20 +72,20 @@ class RentalEquipment extends Model
         return $this->stock;
     }
 
-    /**
-     * Get the main image to display.
-     * Prefers the first variant with an image, then falls back to main image.
-     */
     public function getMainImageAttribute()
     {
         $variantWithImage = $this->variants()->whereNotNull('image')->where('image', '!=', '')->first();
         if ($variantWithImage) {
             $img = $variantWithImage->image;
-            return str_starts_with($img, '/') ? $img : '/' . $img;
+            if (str_starts_with($img, 'http')) return $img;
+            if (str_starts_with($img, '/storage/')) return $img;
+            return str_starts_with($img, '/') ? '/storage' . $img : '/storage/' . $img;
         }
         
         $img = $this->image;
         if (!$img) return '/img/camping.png';
-        return str_starts_with($img, '/') ? $img : '/' . $img;
+        if (str_starts_with($img, 'http')) return $img;
+        if (str_starts_with($img, '/storage/')) return $img;
+        return str_starts_with($img, '/') ? '/storage' . $img : '/storage/' . $img;
     }
 }

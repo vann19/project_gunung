@@ -21,11 +21,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 Route::get('/', function () {
-    $rentalCategories = RentalEquipment::where('is_visible', true)
-        ->select('category')
-        ->distinct()
-        ->orderBy('category')
-        ->pluck('category');
+    $rentalCategories = [
+        'camping', 'kelompok', 'masak', 'makan', 
+        'piknik', 'grill', 'pribadi', 'hydropack'
+    ];
     return view('welcome', compact('rentalCategories'));
 });
 
@@ -55,14 +54,21 @@ Route::get('/checkout/qris/{slug}', function ($slug) {
 
 Route::get('/rental/biodata', function (\Illuminate\Http\Request $request) {
     $slug = $request->query('slug');
-    $days = intval($request->query('days', 1));
+    $qty = intval($request->query('qty', 1));
+    $variantId = $request->query('variant_id');
+    $days = intval($request->query('days', 1)); // Default duration 1 hari
+    
     $singleItem = null;
+    $variant = null;
 
     if ($slug) {
         $singleItem = RentalEquipment::where('slug', $slug)->where('is_visible', true)->first();
+        if ($singleItem && $variantId) {
+            $variant = $singleItem->variants()->where('id', $variantId)->first();
+        }
     }
 
-    return view('rental-biodata', compact('singleItem', 'days'));
+    return view('rental-biodata', compact('singleItem', 'variant', 'qty', 'days'));
 })->name('rental.biodata');
 
 Route::post('/rental/process-biodata', function (\Illuminate\Http\Request $request) {

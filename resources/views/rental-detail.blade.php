@@ -26,8 +26,69 @@
                 </ol>
             </nav>
 
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden flex flex-col md:flex-row">
+            <div x-data="{
+                    quantity: 1,
+                    selectedVariantId: '',
+                    mainImage: '{{ asset($product->main_image) }}',
+                    variants: {{ \Illuminate\Support\Js::from($product->variants ?? []) }},
+                    specs: {{ \Illuminate\Support\Js::from($product->specifications ?? []) }},
+                    hasVariants: {{ ($product->variants && $product->variants->count() > 0) ? 'true' : 'false' }},
+
+                    get displaySpecifications() {
+                        // Prefer product-level specs if provided
+                        if (Array.isArray(this.specs) && this.specs.length) return this.specs;
+                        // If a variant is selected and has specs, show that
+                        if (this.currentVariant && Array.isArray(this.currentVariant.specifications) && this.currentVariant.specifications.length) {
+                            return this.currentVariant.specifications.map(s => ({ label: s.label || '-', value: s.value || '-' }));
+                        }
+                        // Fallback: merge first-seen values across variants
+                        const map = {};
+                        this.variants.forEach(v => {
+                            if (v.specifications && Array.isArray(v.specifications)) {
+                                v.specifications.forEach(s => {
+                                    const label = (s.label || '').toString().trim();
+                                    const value = (s.value || '').toString().trim() || '-';
+                                    if (!label) return;
+                                    if (!map[label] || map[label] === '') map[label] = value;
+                                });
+                            }
+                        });
+                        return Object.keys(map).map(k => ({ label: k, value: map[k] }));
+                    },
+                    
+                    get currentVariant() {
+                        if (!this.hasVariants) return null;
+                        return this.variants.find(v => v.id == this.selectedVariantId);
+                    },
+                    get currentStock() {
+                        if (!this.hasVariants) return {{ $product->total_stock }};
+                        return this.currentVariant ? this.currentVariant.stock : 0;
+                    },
+                    get currentPrice() {
+                        if (this.currentVariant && this.currentVariant.price_override) {
+                            return this.currentVariant.price_override;
+                        }
+                        return '{{ $product->price }}';
+                    },
+                    init() {
+                        if (this.variants.length > 0) {
+                            this.selectedVariantId = this.variants[0].id;
+                        }
+
+                        this.$watch('currentVariant', (val) => {
+                            if (val && val.image) {
+                                this.mainImage = val.image.startsWith('/') ? val.image : '/' + val.image;
+                            } else {
+                                this.mainImage = '{{ asset($product->main_image) }}';
+                            }
+                            // reset quantity when variant changes (optional)
+                            this.quantity = 1;
+                        });
+                    }
+                 }">
                 
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden flex flex-col md:flex-row">
+                    
                 {{-- Product Image & Gallery --}}
                 <div class="md:w-1/2 bg-slate-100 flex flex-col">
                     <div class="relative aspect-square md:aspect-auto md:flex-1">
@@ -87,87 +148,22 @@
                         <p class="text-slate-600 leading-relaxed">{{ Str::limit($product->description ?? 'Alat rental berkualitas tinggi siap menemani petualangan Anda.', 140) }}</p>
                     </div>
 
-                    <div class="mt-auto flex flex-col gap-5" 
-                         x-data="{ 
-                            detailDays: 1, 
-                            selectedColor: '',
-                            selectedSize: '',
-                            mainImage: '{{ asset($product->main_image) }}',
-                            variants: {{ json_encode($product->variants ?? []) }},
-                            hasVariants: {{ ($product->variants && $product->variants->count() > 0) ? 'true' : 'false' }},
-                            
-                            get availableColors() {
-                                return [...new Set(this.variants.map(v => v.color).filter(c => c))];
-                            },
-                            get availableSizes() {
-                                let filtered = this.variants;
-                                if (this.selectedColor) {
-                                    filtered = filtered.filter(v => v.color === this.selectedColor);
-                                }
-                                return [...new Set(filtered.map(v => v.size).filter(s => s))];
-                            },
-                            get currentVariant() {
-                                if (!this.hasVariants) return null;
-                                return this.variants.find(v => 
-                                    (v.color === this.selectedColor || (!v.color && !this.selectedColor)) &&
-                                    (v.size === this.selectedSize || (!v.size && !this.selectedSize))
-                                );
-                            },
-                            get currentStock() {
-                                if (!this.hasVariants) return {{ $product->total_stock }};
-                                return this.currentVariant ? this.currentVariant.stock : 0;
-                            },
-                            get currentPrice() {
-                                if (this.currentVariant && this.currentVariant.price_override) {
-                                    return this.currentVariant.price_override;
-                                }
-                                return '{{ $product->price }}';
-                            },
-                            init() {
-                                if (this.availableColors.length > 0) this.selectedColor = this.availableColors[0];
-                                if (this.availableSizes.length > 0) this.selectedSize = this.availableSizes[0];
-
-                                this.$watch('currentVariant', (val) => {
-                                    if (val && val.image) {
-                                        this.mainImage = val.image.startsWith('/') ? val.image : '/' + val.image;
-                                    } else {
-                                        this.mainImage = '{{ asset($product->main_image) }}';
-                                    }
-                                });
-                            }
-                         }">
+                    <div class="mt-auto flex flex-col gap-5">
                          
-                        <template x-if="availableColors.length > 0">
+                        <template x-if="hasVariants">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Pilih Warna</label>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Pilih Varian</label>
                                 <div class="flex gap-2 flex-wrap">
-                                    <template x-for="color in availableColors" :key="color">
+                                    <template x-for="variant in variants" :key="variant.id">
                                         <button type="button" 
-                                                @click="selectedColor = color; if(!availableSizes.includes(selectedSize)) selectedSize = availableSizes[0] || '';"
-                                                :class="selectedColor === color ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary/50 hover:bg-slate-50'"
+                                                @click="selectedVariantId = variant.id"
+                                                :class="selectedVariantId === variant.id ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary/50 hover:bg-slate-50'"
                                                 class="px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center gap-2">
                                                 
-                                                <!-- Small preview image for color variant if available -->
-                                                <template x-if="variants.find(v => v.color === color && v.image)">
-                                                    <img :src="variants.find(v => v.color === color && v.image).image" class="w-5 h-5 rounded object-cover border border-slate-200">
+                                                <template x-if="variant.image">
+                                                    <img :src="variant.image.startsWith('/') ? variant.image : '/' + variant.image" class="w-5 h-5 rounded object-cover border border-slate-200">
                                                 </template>
-                                                <span x-text="color"></span>
-                                        </button>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-
-                        <template x-if="availableSizes.length > 0">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Pilih Ukuran / Varian</label>
-                                <div class="flex gap-2 flex-wrap">
-                                    <template x-for="size in availableSizes" :key="size">
-                                        <button type="button" 
-                                                @click="selectedSize = size"
-                                                :class="selectedSize === size ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary/50 hover:bg-slate-50'"
-                                                class="px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200"
-                                                x-text="size">
+                                                <span x-text="variant.name"></span>
                                         </button>
                                     </template>
                                 </div>
@@ -183,18 +179,18 @@
                             <div class="flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-2xl p-1.5 shrink-0 h-fit self-center">
                                 <button
                                     type="button"
-                                    @click="if (detailDays > 1) detailDays--"
+                                    @click="if (quantity > 1) quantity--"
                                     class="w-10 h-10 rounded-xl bg-white hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors shadow-2xs"
                                 >
                                     -
                                 </button>
                                 <div class="px-4 text-center">
-                                    <span class="text-base font-bold text-slate-800" x-text="detailDays"></span>
-                                    <span class="text-[10px] text-slate-500 block -mt-1 font-medium">Hari</span>
+                                    <span class="text-base font-bold text-slate-800" x-text="quantity"></span>
+                                    <span class="text-[10px] text-slate-500 block -mt-1 font-medium">Qty</span>
                                 </div>
                                 <button
                                     type="button"
-                                    @click="detailDays++"
+                                    @click="quantity++"
                                     class="w-10 h-10 rounded-xl bg-white hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors shadow-2xs"
                                 >
                                     +
@@ -208,12 +204,12 @@
                                     slug: '{{ $product->slug }}',
                                     title: '{{ addslashes($product->title) }}',
                                     price: currentPrice,
-                                    image: '{{ asset($product->image) }}',
+                                    image: (currentVariant && currentVariant.image ? (currentVariant.image.startsWith('/') ? currentVariant.image : '/' + currentVariant.image) : '{{ asset($product->image) }}'),
                                     category: '{{ $product->category }}',
-                                    color: selectedColor,
-                                    size: selectedSize,
-                                    variant_id: currentVariant ? currentVariant.id : null
-                                }, detailDays) }"
+                                    variant_id: currentVariant ? currentVariant.id : null,
+                                    variant_name: currentVariant ? currentVariant.name : null,
+                                    stock: currentStock
+                                }, quantity) }"
                                 :class="currentStock <= 0 ? 'opacity-50 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-sky-700/10 hover:bg-sky-700/20 text-primary cursor-pointer active:scale-[0.98]'"
                                 class="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all"
                             >
@@ -223,7 +219,7 @@
                                 <span x-text="currentStock <= 0 ? 'Stok Habis' : '+ Keranjang'"></span>
                             </button>
 
-                            <a :href="currentStock > 0 ? ('/rental/biodata?slug={{ $product->slug }}&days=' + detailDays + (selectedColor ? '&color=' + encodeURIComponent(selectedColor) : '') + (selectedSize ? '&size=' + encodeURIComponent(selectedSize) : '') + (currentVariant ? '&variant_id=' + currentVariant.id : '')) : '#'" 
+                            <a :href="currentStock > 0 ? ('/rental/biodata?slug={{ $product->slug }}&qty=' + quantity + (currentVariant ? '&variant_id=' + currentVariant.id : '')) : '#'" 
                                :class="currentStock <= 0 ? 'opacity-50 cursor-not-allowed pointer-events-none bg-slate-300' : 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 active:scale-[0.98]'"
                                class="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all h-fit">
                                 <span>Sewa Langsung</span>
@@ -244,6 +240,38 @@
                         <h2 class="text-lg font-bold text-slate-800 tracking-tight">Spesifikasi Produk</h2>
                     </div>
                     <div class="p-6 md:p-8">
+                        @php
+                            // Prepare display specifications: prefer product-level specs, otherwise merge variant specs
+                            $displaySpecifications = [];
+                            if (!empty($product->specifications) && is_array($product->specifications) && count($product->specifications) > 0) {
+                                $displaySpecifications = $product->specifications;
+                            } else {
+                                // collect first seen value for each label from variants
+                                foreach ($product->variants as $variant) {
+                                    if (!empty($variant->specifications) && is_array($variant->specifications)) {
+                                        foreach ($variant->specifications as $spec) {
+                                            $label = trim(data_get($spec, 'label', ''));
+                                            $value = trim(data_get($spec, 'value', ''));
+                                            if ($label === '') continue;
+                                            if (!array_key_exists($label, $displaySpecifications)) {
+                                                $displaySpecifications[$label] = $value ?: '-';
+                                            } else {
+                                                // if already present but empty, prefer non-empty
+                                                if (($displaySpecifications[$label] === '-' || $displaySpecifications[$label] === '') && $value !== '') {
+                                                    $displaySpecifications[$label] = $value;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // convert to array of ['label'=>..., 'value'=>...]
+                                $displaySpecifications = array_map(function($k, $v) {
+                                    return ['label' => $k, 'value' => $v];
+                                }, array_keys($displaySpecifications), $displaySpecifications);
+                            }
+
+                        @endphp
+
                         <div class="divide-y divide-slate-100 text-sm">
                             <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                 <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Kategori</span>
@@ -264,27 +292,29 @@
                                 <span class="text-slate-800 font-bold font-['JetBrains_Mono']">{{ $product->price }}</span>
                             </div>
 
-                            @if(!empty($product->specifications) && is_array($product->specifications) && count($product->specifications) > 0)
-                                @foreach($product->specifications as $spec)
+                            <template x-if="displaySpecifications && displaySpecifications.length">
+                                <template x-for="spec in displaySpecifications" :key="spec.label">
                                     <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-                                        <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">{{ $spec['label'] ?? '-' }}</span>
-                                        <span class="text-slate-700 font-medium">{{ $spec['value'] ?? '-' }}</span>
+                                        <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal" x-text="spec.label"></span>
+                                        <span class="text-slate-700 font-medium" x-text="spec.value"></span>
                                     </div>
-                                @endforeach
-                            @else
+                                </template>
+                            </template>
+
+                            <template x-if="!displaySpecifications || displaySpecifications.length === 0">
                                 <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                     <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Merek</span>
-                                    <span class="text-blue-600 font-medium">Original Standar Gunung (SPEEDS / Eiger / Arei)</span>
+                                    <span class="text-slate-700 font-medium">-</span>
                                 </div>
                                 <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                     <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Masa Garansi</span>
-                                    <span class="text-slate-700 font-medium">Garansi Fungsi Selama Masa Sewa</span>
+                                    <span class="text-slate-700 font-medium">-</span>
                                 </div>
                                 <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                     <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Kebersihan Alat</span>
-                                    <span class="text-slate-700 font-medium">Sudah Dicuci Bersih & Desinfeksi (Ready to Use)</span>
+                                    <span class="text-slate-700 font-medium">-</span>
                                 </div>
-                            @endif
+                            </template>
 
                             <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                 <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Dikirim Dari</span>
@@ -304,6 +334,7 @@
                     </div>
                 </div>
 
+            </div>
             </div>
         </div>
     </main>

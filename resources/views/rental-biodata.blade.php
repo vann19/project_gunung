@@ -4,19 +4,35 @@
         // Persiapkan data awal untuk Alpine.js
         $initialItemJson = 'null';
         if ($singleItem) {
-            $priceStr = preg_replace('/[^0-9]/', '', $singleItem->price);
+            $currentPrice = (isset($variant) && $variant->price_override) ? $variant->price_override : $singleItem->price;
+            $priceStr = preg_replace('/[^0-9]/', '', $currentPrice);
             $priceNum = intval($priceStr);
-            if (stripos($singleItem->price, 'k') !== false && $priceNum < 100000) {
+            if (stripos($currentPrice, 'k') !== false && $priceNum < 100000) {
                 $priceNum *= 1000;
             }
+            
+            $imagePath = (isset($variant) && $variant->image) ? $variant->image : $singleItem->image;
+            $imageAsset = $imagePath;
+            if (!empty($imagePath) && !str_starts_with($imagePath, 'http')) {
+                $imageAsset = str_starts_with($imagePath, '/') ? $imagePath : '/' . ltrim($imagePath, '/');
+                if (!str_starts_with($imageAsset, '/storage') && !str_starts_with($imageAsset, '/img')) {
+                     $imageAsset = '/storage' . $imageAsset;
+                }
+            } elseif (empty($imagePath)) {
+                $imageAsset = '/img/camping.png';
+            }
+
             $initialItemJson = json_encode([
                 'slug' => $singleItem->slug,
                 'title' => $singleItem->title,
-                'price' => $singleItem->price,
+                'price' => $currentPrice,
                 'priceNum' => $priceNum,
+                'quantity' => $qty ?? 1,
                 'days' => $days,
-                'image' => asset($singleItem->image),
-                'category' => $singleItem->category
+                'image' => $imageAsset,
+                'category' => $singleItem->category,
+                'variant_id' => isset($variant) ? $variant->id : null,
+                'variant_name' => isset($variant) ? $variant->name : null,
             ]);
         }
         $defaultStartDate = date('Y-m-d');
@@ -52,7 +68,7 @@
                   }
               },
               get totalPrice() {
-                  return this.items.reduce((sum, item) => sum + (item.priceNum * (item.quantity || item.days || 1) * this.totalDays), 0);
+                  return this.items.reduce((sum, item) => sum + (item.priceNum * (item.quantity || item.days || 1)), 0);
               },
               formatPrice(amount) {
                   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
@@ -423,8 +439,8 @@
                                             </template>
                                         </div>
                                         <div class="mt-1 flex items-center justify-between text-xs">
-                                            <span class="text-slate-500" x-text="item.price + ' x ' + (item.quantity || item.days || 1) + ' Barang x ' + totalDays + ' Hari'"></span>
-                                            <span class="font-bold text-secondary-600 font-['Hanken_Grotesk']" x-text="formatPrice(item.priceNum * (item.quantity || item.days || 1) * totalDays)"></span>
+                                            <span class="text-slate-500" x-text="item.price + ' x ' + (item.quantity || item.days || 1) + ' Qty'"></span>
+                                            <span class="font-bold text-secondary-600 font-['Hanken_Grotesk']" x-text="formatPrice(item.priceNum * (item.quantity || item.days || 1))"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -433,8 +449,8 @@
 
                         <div class="bg-slate-50/80 p-6 border-t border-slate-200/80 space-y-3">
                             <div class="flex justify-between items-center text-xs text-slate-500">
-                                <span>Durasi Sewa</span>
-                                <span class="font-bold text-slate-700" x-text="totalDays + ' Hari'"></span>
+                                <span>Total Qty</span>
+                                <span class="font-bold text-slate-700" x-text="items.reduce((sum, item) => sum + parseInt(item.quantity || item.days || 1), 0) + ' Qty'"></span>
                             </div>
                             <div class="flex justify-between items-center text-xs text-slate-500">
                                 <span>Status Awal Pesanan</span>

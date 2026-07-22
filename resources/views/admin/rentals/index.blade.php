@@ -77,16 +77,7 @@
                     <span class="text-xs text-slate-500 font-medium">Alat</span>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl border {{ $lowStock > 0 ? 'border-rose-200 bg-rose-50/30' : 'border-slate-200/80' }} shadow-xs">
-                <span class="text-xs font-semibold {{ $lowStock > 0 ? 'text-rose-500' : 'text-slate-400' }} uppercase tracking-wider font-['JetBrains_Mono'] flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Stok Hampir Habis
-                </span>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-3xl font-bold {{ $lowStock > 0 ? 'text-rose-600' : 'text-slate-800' }}">{{ $lowStock }}</span>
-                    <span class="text-xs {{ $lowStock > 0 ? 'text-rose-400' : 'text-slate-500' }} font-medium">Varian/Alat (&le;2)</span>
-                </div>
-            </div>
+           
         </div>
 
 
@@ -221,13 +212,6 @@
                                 </td>
                                 <td class="py-4 px-6 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        {{-- Tombol Jual ke Marketplace --}}
-                                        <button type="button" @click="openSellModal({{ $item->id }})"
-                                           class="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition"
-                                           title="Jual ke Marketplace">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                        </button>
-
                                         {{-- Tombol Toggle Visibility --}}
                                         <form method="POST" action="{{ route('admin.rentals.toggle-visible', $item) }}">
                                             @csrf
@@ -330,7 +314,7 @@
                         <div x-data="{ variants: [] }">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Kombinasi Varian Produk</label>
-                                <button type="button" @click="variants.push({color:'', size:'', sku:'', stock:1, price_override:''})" class="text-xs px-2.5 py-1 bg-white border border-slate-200 rounded-lg font-semibold text-primary hover:bg-primary hover:text-white transition">+ Tambah Varian</button>
+                                <button type="button" @click="variants.push({name:'', sku:'', stock:1, price_override:'', specifications: [{label: 'Merek', value: ''}, {label: 'Berat', value: ''}]})" class="text-xs px-2.5 py-1 bg-white border border-slate-200 rounded-lg font-semibold text-primary hover:bg-primary hover:text-white transition">+ Tambah Varian</button>
                             </div>
                             <p class="text-[10px] text-slate-400 mb-2">Isi warna, ukuran, foto varian (opsional). Kombinasi ini memiliki stok sendiri.</p>
                             <div class="space-y-2 max-h-60 overflow-y-auto">

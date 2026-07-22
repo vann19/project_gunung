@@ -114,67 +114,67 @@
     </div>
 
     {{-- Info Panel Kanan Bawah --}}
-    <div class="absolute bottom-8 lg:bottom-12 right-6 lg:right-12 z-20">
-        <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-6 flex items-center gap-6 lg:gap-10 shadow-2xl">
+    <div class="absolute bottom-20 lg:bottom-12 left-4 right-4 lg:left-auto lg:right-12 z-20">
+        <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-4 lg:p-6 flex items-center justify-between lg:justify-start gap-2 lg:gap-10 shadow-2xl overflow-x-auto">
             @foreach ($slides as $index => $slide)
                 <div
-                    class="flex items-center gap-6 lg:gap-10"
+                    class="flex items-center justify-between w-full gap-3 lg:gap-10"
                     @if ($index > 0) style="display: none;" @endif
                     x-show="active === {{ $index }}"
                     x-transition:enter="transition-opacity ease-out duration-300"
                     x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100"
                 >
-                    <div class="flex flex-col items-center min-w-[100px]">
-                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_mountain') }}</span>
-                        <span class="text-zinc-200 text-base lg:text-lg font-semibold text-center leading-tight">{{ $slide['name'] }}</span>
+                    <div class="flex flex-col items-center min-w-[70px] lg:min-w-[100px]">
+                        <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1 text-center">{{ __('home.hero_label_mountain') }}</span>
+                        <span class="text-zinc-200 text-sm lg:text-lg font-semibold text-center leading-tight">{{ $slide['name'] }}</span>
                     </div>
 
-                    <div class="w-px h-12 bg-neutral-600/50"></div>
+                    <div class="w-px h-10 lg:h-12 bg-neutral-600/50 shrink-0"></div>
 
-                    <div class="flex flex-col items-center">
-                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_elev') }}</span>
-                        <span class="text-zinc-200 text-3xl font-semibold">{{ $slide['elevation'] }}</span>
+                    <div class="flex flex-col items-center shrink-0">
+                        <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_elev') }}</span>
+                        <span class="text-zinc-200 text-xl lg:text-3xl font-semibold">{{ $slide['elevation'] }}</span>
                     </div>
 
-                    <div class="w-px h-12 bg-neutral-600/50"></div>
+                    <div class="w-px h-10 lg:h-12 bg-neutral-600/50 shrink-0"></div>
 
-                    <div class="flex flex-col items-center min-w-[72px]">
-                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_temp') }}</span>
+                    <div class="flex flex-col items-center min-w-[50px] lg:min-w-[72px] shrink-0">
+                        <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_temp') }}</span>
                         <span
-                            class="text-zinc-200 text-3xl font-semibold tabular-nums"
+                            class="text-zinc-200 text-xl lg:text-3xl font-semibold tabular-nums"
                             x-text="tempFor({{ $index }}, '—')"
                             :class="weatherLoading && 'opacity-50 animate-pulse'"
                         ></span>
                     </div>
 
-                    <div class="w-px h-12 bg-neutral-600/50"></div>
+                    <div class="w-px h-10 lg:h-12 bg-neutral-600/50 shrink-0"></div>
 
-                    <div class="flex flex-col items-center min-w-[72px]">
-                        <span class="text-biru text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_weather') }}</span>
+                    <div class="flex flex-col items-center min-w-[50px] lg:min-w-[72px] shrink-0">
+                        <span class="text-biru text-[9px] lg:text-xs font-medium font-['JetBrains_Mono'] tracking-widest mb-1">{{ __('home.hero_label_weather') }}</span>
 
                         {{-- Cerah --}}
-                        <svg x-show="weatherType({{ $index }}) === 'sunny'" class="w-8 h-8 text-yellow-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'sunny'" class="w-6 h-6 lg:w-8 lg:h-8 text-yellow-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zm10-8a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1z"/>
                         </svg>
 
                         {{-- Hujan --}}
-                        <svg x-show="weatherType({{ $index }}) === 'rainy'" class="w-8 h-8 text-blue-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'rainy'" class="w-6 h-6 lg:w-8 lg:h-8 text-blue-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Salju --}}
-                        <svg x-show="weatherType({{ $index }}) === 'snowy'" class="w-8 h-8 text-sky-200 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'snowy'" class="w-6 h-6 lg:w-8 lg:h-8 text-sky-200 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Berkabut --}}
-                        <svg x-show="weatherType({{ $index }}) === 'foggy'" class="w-8 h-8 text-stone-400 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'foggy'" class="w-6 h-6 lg:w-8 lg:h-8 text-stone-400 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 
                         {{-- Berawan (default) --}}
-                        <svg x-show="weatherType({{ $index }}) === 'cloudy'" class="w-8 h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="weatherType({{ $index }}) === 'cloudy'" class="w-6 h-6 lg:w-8 lg:h-8 text-stone-300 mt-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6.995 12c2.893 0 5.234-2.379 5.234-5.31A5.36 5.36 0 0 0 12 5.051a6 6 0 1 1-5.005 6.949z"/>
                         </svg>
 

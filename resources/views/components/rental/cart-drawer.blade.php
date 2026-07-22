@@ -135,7 +135,7 @@
                                                     </button>
                                                     <div class="px-3 text-center">
                                                         <span class="text-xs font-bold text-primary" x-text="item.quantity || item.days || 1"></span>
-                                                        <span class="text-[10px] text-stone-500 block -mt-0.5">Barang</span>
+                                                        <span class="text-[10px] text-stone-500 block -mt-0.5">Qty</span>
                                                     </div>
                                                     <button
                                                         type="button"
@@ -148,13 +148,15 @@
                                                 </div>
                                                 <div class="flex flex-col items-end gap-0.5 text-xs">
                                                     <span class="font-semibold text-stone-600">Sisa Stok:</span>
-                                                    <span class="font-bold font-['JetBrains_Mono'] text-emerald-600" x-text="item.stock || 'Tersedia'"></span>
+                                                    <span class="font-bold font-['JetBrains_Mono'] text-emerald-600" x-text="(item.stock > 0) ? item.stock + ' unit' : 'Tersedia'"></span>
                                                 </div>
                                             </div>
 
                                             {{-- Subtotal --}}
                                             <div class="flex justify-between items-center text-xs font-bold pt-1 text-stone-800">
-                                                <span class="text-stone-500 font-medium">Subtotal Barang:</span>
+                                                <span class="text-stone-500 font-medium">
+                                                    Subtotal (<span x-text="item.quantity || item.days || 1"></span> qty):
+                                                </span>
                                                 <span class="text-secondary-600 font-['Hanken_Grotesk'] text-sm" x-text="$store.rentalCart.formatPrice(item.priceNum * (item.quantity || item.days || 1))"></span>
                                             </div>
                                         </div>
@@ -168,20 +170,24 @@
                             x-show="$store.rentalCart && $store.rentalCart.items.length > 0"
                             class="border-t border-stone-200 px-6 py-6 bg-stone-50"
                         >
-                            <div class="flex justify-between items-center mb-4">
+                            <div class="flex justify-between items-center mb-1">
                                 <div>
                                     <span class="text-xs font-medium text-stone-500 block">Total Tagihan</span>
-                                    <span class="text-xs text-stone-400">Total <span x-text="$store.rentalCart.itemCount"></span> alat</span>
+                                    <span class="text-xs text-stone-400">
+                                        <span x-text="$store.rentalCart.itemCount"></span> alat,
+                                        total <span x-text="$store.rentalCart.totalDays"></span> qty
+                                    </span>
                                 </div>
                                 <span class="text-2xl font-black text-secondary-500 font-['Hanken_Grotesk']" x-text="$store.rentalCart.formatPrice($store.rentalCart.totalPrice)"></span>
                             </div>
+                            <p class="text-[10px] text-stone-400 mb-4">*Subtotal sudah termasuk durasi sewa masing-masing alat</p>
 
                             <div class="space-y-2.5">
                                 <a
                                     href="/rental/biodata"
                                     class="w-full py-3.5 bg-linear-to-b from-kuning to-secondary-600 hover:from-kuning/90 hover:to-secondary-600/90 rounded-xl text-center text-zinc-800 text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg block active:scale-[0.98]"
                                 >
-                                    Lanjutkan Checkout QRIS
+                                    Isi Data Diri & Checkout
                                 </a>
                                 <button
                                     type="button"

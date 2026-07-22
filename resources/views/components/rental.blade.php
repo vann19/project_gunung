@@ -71,7 +71,7 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Sempurna untuk piknik santai di kaki gunung atau area perkemahan keluarga.
                 </p>
-                <a href="#" class="inline-flex items-center gap-2 text-primary font-medium text-sm mt-2 font-['JetBrains_Mono'] hover:text-primary transition-colors">
+                <a href="/rental?category=grill" class="inline-flex items-center gap-2 text-primary font-medium text-sm mt-2 font-['JetBrains_Mono'] hover:text-primary transition-colors">
                     Detail <span class="text-lg leading-none">&rarr;</span>
                 </a>
             </div>
@@ -85,7 +85,7 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Sistem hidrasi teknis untuk trail running atau pendakian cepat tektok.
                 </p>
-                <a href="#" class="inline-flex items-center gap-2 text-primary font-medium text-sm mt-2 font-['JetBrains_Mono'] hover:text-primary transition-colors">
+                <a href="/service/cuci-alat" class="inline-flex items-center gap-2 text-primary font-medium text-sm mt-2 font-['JetBrains_Mono'] hover:text-primary transition-colors">
                     Detail <span class="text-lg leading-none">&rarr;</span>
                 </a>
             </div>
@@ -103,10 +103,22 @@
                 
                 {{-- Tags Kategori Dinamis dari DB --}}
                 <div class="flex flex-wrap justify-center gap-3 mt-4">
+                    @php
+                        $catLabels = [
+                            'camping' => 'Camping',
+                            'kelompok' => 'Kelompok',
+                            'masak' => 'Masak',
+                            'makan' => 'Makan',
+                            'piknik' => 'Piknik Santai',
+                            'grill' => 'Grill',
+                            'pribadi' => 'Pribadi',
+                            'hydropack' => 'Hydropack',
+                        ];
+                    @endphp
                     @forelse ($categories as $cat)
                         <a href="/rental?category={{ urlencode($cat) }}"
-                           class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs hover:bg-primary/40 transition-colors cursor-pointer capitalize">
-                            {{ $cat }}
+                           class="px-4 py-2 bg-primary/15 rounded-full border border-gray-200 text-primary text-xs hover:bg-primary/40 transition-colors cursor-pointer">
+                            {{ $catLabels[$cat] ?? ucfirst($cat) }}
                         </a>
                     @empty
                         <span class="text-stone-400 text-sm">Belum ada kategori tersedia.</span>

@@ -36,7 +36,7 @@
     <section
         class="bg-surface-soft py-12 lg:py-16 px-6 lg:px-12"
         x-data="{
-            activeCategory: 'all',
+            activeCategory: new URLSearchParams(window.location.search).get('category') || 'all',
             productCategories: {{ Js::from(collect($products)->pluck('category')->unique()->values()) }},
             matches(category) {
                 return this.activeCategory === 'all' || this.activeCategory === category;

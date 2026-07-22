@@ -310,6 +310,7 @@ class RentalController extends Controller
             'price' => 'required|string|max:100',
             'old_price' => 'nullable|string|max:100',
             'marketplace_category' => 'required|string|max:100',
+            'condition_badge' => 'nullable|string|max:100',
         ]);
 
         $variant = $rental->variants()->where('id', $validated['variant_id'])->firstOrFail();
@@ -321,12 +322,21 @@ class RentalController extends Controller
         // Kurangi stok di rental
         $variant->decrement('stock', $validated['qty']);
 
+        $conditionBadge = $validated['condition_badge'] ?? 'Bekas';
+        if ($conditionBadge === 'Baru') {
+            $badgeClass = 'bg-secondary-400 text-surface-dark';
+        } elseif ($conditionBadge === 'Bekas') {
+            $badgeClass = 'bg-white text-gray-700 border border-gray-200';
+        } else {
+            $badgeClass = 'bg-amber-100 text-amber-800';
+        }
+
         // Tambahkan ke Marketplace
         \App\Models\MarketplaceItem::create([
             'title' => $rental->title . ($variant->color ? " - {$variant->color}" : '') . ($variant->size ? " ({$variant->size})" : ''),
             'category' => $validated['marketplace_category'],
-            'condition_badge' => 'Ex-Rental',
-            'badge_class' => 'bg-amber-400 text-amber-900',
+            'condition_badge' => $conditionBadge,
+            'badge_class' => $badgeClass,
             'spec' => 'Barang Bekas Rental',
             'description' => "Barang ex-rental (pernah disewakan).\n\n" . $rental->description,
             'whatsapp_number' => null,

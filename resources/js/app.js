@@ -15,8 +15,11 @@ document.addEventListener('alpine:init', () => {
                     // Migrate old items
                     this.items.forEach(item => {
                         item.priceNum = this.parsePrice(item.price);
-                        if(item.days && !item.quantity) {
+                        if (item.days && !item.quantity) {
                             item.quantity = item.days;
+                        }
+                        if (item.quantity && !item.days) {
+                            item.days = item.quantity;
                         }
                     });
                     this.save();
@@ -48,6 +51,7 @@ document.addEventListener('alpine:init', () => {
             if (existingIndex > -1) {
                 if (!product.stock || this.items[existingIndex].quantity + quantity <= product.stock) {
                     this.items[existingIndex].quantity += quantity;
+                    this.items[existingIndex].days = this.items[existingIndex].quantity;
                 }
             } else {
                 const priceNum = this.parsePrice(product.price);
@@ -63,7 +67,8 @@ document.addEventListener('alpine:init', () => {
                     variant_id: product.variant_id || null,
                     variant_name: product.variant_name || null,
                     stock: product.stock || 0,
-                    quantity: quantity
+                    quantity: quantity,
+                    days: quantity
                 });
             }
             this.save();
@@ -121,6 +126,10 @@ document.addEventListener('alpine:init', () => {
 
         get itemCount() {
             return this.items.length;
+        },
+
+        get totalDays() {
+            return this.items.reduce((total, item) => total + (item.quantity || item.days || 1), 0);
         },
 
         get totalPrice() {

@@ -6,7 +6,9 @@
                 if (!this.$store.rentalCart || this.$store.rentalCart.items.length === 0) return '#';
                 let msg = 'Halo Admin Basecamp Outdoor!\n\nSaya ingin mengonfirmasi pembayaran sewa alat rental dengan rincian:\n\n';
                 this.$store.rentalCart.items.forEach((item, idx) => {
-                    msg += `${idx + 1}. *${item.title}*\n`;
+                    const title = item.variant_name ? `${item.title} (${item.variant_name})` : item.title;
+                    const days = item.quantity || item.days || 1;
+                    msg += `${idx + 1}. *${title}* - ${days} Hari\n`;
                 });
                 msg += `\n*Total Tagihan: ${this.$store.rentalCart.formatPrice(this.$store.rentalCart.totalPrice)}*\n\nBerikut saya lampirkan foto screenshot bukti transfer pembayaran.`;
                 return 'https://wa.me/6281227387668?text=' + encodeURIComponent(msg);
@@ -53,19 +55,22 @@
                                 </div>
                                 
                                 <div class="space-y-4 max-h-64 overflow-y-auto pr-1">
-                                    <template x-for="item in $store.rentalCart.items" :key="item.slug">
+                                    <template x-for="item in $store.rentalCart.items" :key="item.slug + '-' + (item.variant_id || 'base')">
                                         <div class="flex items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                                             <div class="flex items-center gap-3 min-w-0">
                                                 <img :src="item.image" :alt="item.title" class="w-12 h-12 rounded-lg object-cover bg-white shrink-0 border border-slate-200">
                                                 <div class="min-w-0">
                                                     <h3 class="font-bold text-slate-800 text-sm truncate" x-text="item.title"></h3>
-                                                    <p class="text-xs text-slate-500">
-                                                        <span x-text="item.price"></span> x <strong class="text-slate-700" x-text="item.days + ' Hari'"></strong>
+                                                    <template x-if="item.variant_name">
+                                                        <p class="text-[10px] text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded uppercase tracking-wider block mt-1" x-text="item.variant_name"></p>
+                                                    </template>
+                                                    <p class="text-xs text-slate-500 mt-1">
+                                                        <span x-text="item.price"></span> x <strong class="text-slate-700" x-text="(item.quantity || item.days || 1) + ' Hari'"></strong>
                                                     </p>
                                                 </div>
                                             </div>
                                             <div class="text-right shrink-0">
-                                                <span class="text-sm font-black text-secondary-600 font-['Hanken_Grotesk']" x-text="$store.rentalCart.formatPrice(item.priceNum * item.days)"></span>
+                                                <span class="text-sm font-black text-secondary-600 font-['Hanken_Grotesk']" x-text="$store.rentalCart.formatPrice(item.priceNum * (item.quantity || item.days || 1))"></span>
                                             </div>
                                         </div>
                                     </template>
