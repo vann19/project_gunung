@@ -404,8 +404,40 @@ Route::get('/service/guide/checkout/{order_code}', function ($order_code) {
     return view('qris-booking-guide', compact('order'));
 })->name('guide.checkout');
 
-Route::get('/service/marketplace', function () {
-    $items = MarketplaceItem::latest()->get();
+Route::get('/service/marketplace', function (\Illuminate\Http\Request $request) {
+    $items = MarketplaceItem::all();
+
+    // 1. Filter Kategori
+    if ($request->filled('category') && $request->category !== 'all') {
+        $items = $items->where('category', $request->category);
+    }
+
+    // 2. Filter Kondisi (Bekas/Baru)
+    if ($request->filled('kondisi')) {
+        $kondisi = (array) $request->kondisi;
+        $items = $items->filter(function($item) use ($kondisi) {
+            $badge = strtolower($item->condition_badge ?? '');
+            foreach ($kondisi as $k) {
+                if (str_contains($badge, strtolower($k))) return true;
+            }
+            return false;
+        });
+    }
+
+    // 3. Sorting
+    $sort = $request->input('sort', 'terbaru');
+    if ($sort === 'terendah') {
+        $items = $items->sortBy(function($item) {
+            return (int) preg_replace('/[^0-9]/', '', $item->price);
+        });
+    } elseif ($sort === 'tertinggi') {
+        $items = $items->sortByDesc(function($item) {
+            return (int) preg_replace('/[^0-9]/', '', $item->price);
+        });
+    } else {
+        $items = $items->sortByDesc('created_at');
+    }
+
     return view('marketplace', compact('items'));
 });
 

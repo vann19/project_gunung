@@ -28,7 +28,8 @@
 @endphp
 
 <div id="produk" class="w-full px-6 lg:px-12 py-10 lg:py-12 scroll-mt-24">
-    <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+    <form action="{{ url()->current() }}" method="GET" class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <input type="hidden" name="category" id="cat-input" value="{{ request('category', 'all') }}">
 
         {{-- ============ SIDEBAR ============ --}}
         <div x-data="{ showFilters: false }" class="lg:col-span-1">
@@ -45,10 +46,14 @@
 
             <div class="flex flex-col gap-1">
                 @foreach ($categories as $cat)
+                    @php
+                        $isActive = request('category', 'all') === $cat['key'];
+                    @endphp
                     <button type="button"
+                            onclick="document.getElementById('cat-input').value = '{{ $cat['key'] }}'; this.form.submit();"
                             class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-left transition-colors
-                                   {{ $cat['active'] ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        <span class="{{ $cat['active'] ? 'text-white' : 'text-gray-400' }}">{!! $categoryIcons[$cat['key']] !!}</span>
+                                   {{ $isActive ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <span class="{{ $isActive ? 'text-white' : 'text-gray-400' }}">{!! $categoryIcons[$cat['key']] !!}</span>
                         {{ $cat['label'] }}
                     </button>
                 @endforeach
@@ -58,11 +63,11 @@
                 <h3 class="font-bold text-gray-900 text-sm mb-3">Kondisi</h3>
                 <div class="flex flex-col gap-2.5">
                     <label class="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/50" />
+                        <input type="checkbox" name="kondisi[]" value="bekas" onchange="this.form.submit()" {{ in_array('bekas', (array)request('kondisi')) ? 'checked' : '' }} class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/50" />
                         Bekas
                     </label>
                     <label class="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/50" />
+                        <input type="checkbox" name="kondisi[]" value="baru" onchange="this.form.submit()" {{ in_array('baru', (array)request('kondisi')) ? 'checked' : '' }} class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/50" />
                         Baru
                     </label>
                   
@@ -82,10 +87,10 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <h2 class="text-xl font-bold text-gray-900">Menampilkan {{ count($items) }} Produk</h2>
                 <div class="relative w-full sm:w-44">
-                    <select class="input appearance-none pr-9 text-sm">
-                        <option>Terbaru</option>
-                        <option>Harga Terendah</option>
-                        <option>Harga Tertinggi</option>
+                    <select name="sort" onchange="this.form.submit()" class="input appearance-none pr-9 text-sm">
+                        <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="terendah" {{ request('sort') == 'terendah' ? 'selected' : '' }}>Harga Terendah</option>
+                        <option value="tertinggi" {{ request('sort') == 'tertinggi' ? 'selected' : '' }}>Harga Tertinggi</option>
                     </select>
                     <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
@@ -143,5 +148,5 @@
             </div>
         </div>
 
-    </div>
+    </form>
 </div>
