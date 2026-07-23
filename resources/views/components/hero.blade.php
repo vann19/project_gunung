@@ -91,34 +91,34 @@
     @endforeach
 
     {{-- Konten Kiri --}}
-    <div class="relative z-10 h-full max-w-[1280px] mx-auto px-6 lg:px-12 flex flex-col justify-center">
-        <div class="w-full md:w-1/2 flex flex-col items-start gap-6">
-            <div class="px-4 py-1.5 bg-primary/20 rounded-full border border-primary/30 backdrop-blur-sm inline-flex items-center">
-                <span class="text-white text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-widest">
+    <div class="relative z-10 h-full max-w-[1280px] mx-auto px-6 lg:px-12 flex flex-col justify-center pt-14 pb-28 lg:py-0">
+        <div class="w-full md:w-1/2 flex flex-col items-start gap-3 sm:gap-6">
+            <div class="px-3 py-1 sm:px-4 sm:py-1.5 bg-primary/20 rounded-full border border-primary/30 backdrop-blur-sm inline-flex items-center">
+                <span class="text-white text-[10px] sm:text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-widest">
                     {{ __('home.hero_tagline') }}
                 </span>
             </div>
 
-            <h1 class="text-5xl lg:text-6xl font-bold text-zinc-200 leading-[1.1] tracking-tight">
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-zinc-200 leading-[1.15] tracking-tight">
                 {{ __('home.hero_title_1') }}<br/>
                 <span class="text-stone-400 italic">{{ __('home.hero_title_2') }}</span>
             </h1>
 
-            <p class="text-stone-300 text-lg leading-relaxed max-w-[500px]">
+            <p class="text-stone-300 text-sm sm:text-base lg:text-lg leading-relaxed max-w-[500px]">
                 {{ __('home.hero_desc') }}
             </p>
 
-            <div class="flex flex-col sm:flex-row items-start gap-4 mt-2">
-                <a href="/rental" class="px-8 py-4 bg-kuning hover:bg-kuning/90 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-md">
-                    <span class="text-zinc-800 text-base font-bold">{{ __('home.hero_cta_rent') }}</span>
-                    <svg class="w-5 h-5 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-start gap-4 mt-1 lg:mt-2 w-full sm:w-auto">
+                <a href="/rental" class="px-6 py-3 sm:px-8 sm:py-4 bg-kuning hover:bg-kuning/90 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-md w-full sm:w-auto">
+                    <span class="text-zinc-800 text-sm sm:text-base font-bold">{{ __('home.hero_cta_rent') }}</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>
         </div>
     </div>
 
     {{-- Info Panel Kanan Bawah --}}
-    <div class="absolute bottom-20 lg:bottom-12 left-4 right-4 lg:left-auto lg:right-12 z-20">
+    <div class="absolute bottom-6 sm:bottom-20 lg:bottom-12 left-4 right-4 lg:left-auto lg:right-12 z-20">
         <div class="bg-neutral-800/60 rounded-2xl border border-stone-300/10 backdrop-blur-md p-4 lg:p-6 flex items-center justify-between lg:justify-start gap-2 lg:gap-10 shadow-2xl overflow-x-auto">
             @foreach ($slides as $index => $slide)
                 @php
