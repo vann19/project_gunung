@@ -80,7 +80,7 @@
                     <div class="md:col-span-6 flex flex-col items-center justify-center bg-slate-50/80 p-6 rounded-3xl border border-slate-200/80 text-center">
                         <div class="mb-4">
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-['JetBrains_Mono'] block mb-1">Scan QRIS Pembayaran</span>
-                            <h3 class="font-bold text-slate-800 text-base">Project Gunung Official</h3>
+                            <h3 class="font-bold text-slate-800 text-base">Basecamps Outdoor Official</h3>
                         </div>
 
                         <div class="w-56 h-56 bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-center relative mb-4 shadow-sm">

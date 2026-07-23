@@ -251,7 +251,7 @@
                     <h3 class="text-white font-bold">Jaminan Ekspedisi Resmi</h3>
                 </div>
                 <p class="text-white/80 text-xs leading-5">
-                    Data peserta otomatis terdaftar dalam protokol keselamatan porter & guide Project Gunung.
+                    Data peserta otomatis terdaftar dalam protokol keselamatan porter & guide Basecamps Outdoor.
                 </p>
             </div>
         </div>

@@ -483,7 +483,7 @@
                                 </template>
                             </button>
                             <p class="text-[11px] text-slate-400 text-center mt-3 leading-tight">
-                                🔒 Data biodata & foto KTP Anda dilindungi dan hanya digunakan oleh Admin Project Gunung untuk keperluan verifikasi rental.
+                                🔒 Data biodata & foto KTP Anda dilindungi dan hanya digunakan oleh Admin Basecamps Outdoor untuk keperluan verifikasi rental.
                             </p>
                         </div>
 

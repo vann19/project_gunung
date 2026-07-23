@@ -102,7 +102,7 @@
                                 $itemLines .= "%0A" . ($i + 2) . ". " . $item['nama'] . " (ID: " . $item['nik'] . ")";
                             }
                         }
-                        $waMessage = "Halo Admin Project Gunung!%0A%0ASaya ingin mengonfirmasi booking Guide Pendakian:%0A%0A"
+                        $waMessage = "Halo Admin Basecamps Outdoor!%0A%0ASaya ingin mengonfirmasi booking Guide Pendakian:%0A%0A"
                             . "Guide: *{$order['guide_title']}*%0A"
                             . "Durasi: *{$order['durasi_hari']} Hari*%0A"
                             . "Total Tagihan: *Rp " . number_format($order['total_tagihan'], 0, ',', '.') . "*%0A"

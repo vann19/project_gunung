@@ -98,7 +98,7 @@
                                 $itemLines .= "%0A" . ($i + 2) . ". " . $item['nama'] . " (ID: " . $item['nik'] . ")";
                             }
                         }
-                            $waMessage = "Halo Admin Project Gunung!%0A%0ASaya ingin mengonfirmasi pendaftaran Open Trip:%0A%0A"
+                            $waMessage = "Halo Admin Basecamps Outdoor!%0A%0ASaya ingin mengonfirmasi pendaftaran Open Trip:%0A%0A"
                             . "Paket: *{$order['trip_title']}*%0A"
                             . "Total Peserta: *{$order['total_peserta']} Orang*%0A"
                             . "Total Tagihan: *Rp " . number_format($order['total_tagihan'], 0, ',', '.') . "*%0A"

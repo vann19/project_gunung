@@ -1,5 +1,4 @@
-<x-layouts.app title="Service - {{ config('app.name') }}"
-    description="Layanan lengkap untuk mendukung ekspedisi pendakian Anda.">
+<x-layouts.app title="Layanan - {{ config('app.name') }}" description="Layanan pendukung dari Basecamps Outdoor: Cuci Alat, Guide Pendakian, dan Open Trip.">
 
     <div class="bg-white min-h-screen">
         {{-- Hero Section --}}

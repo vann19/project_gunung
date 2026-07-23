@@ -318,7 +318,7 @@
 
                             <div class="py-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                 <span class="text-slate-400 sm:w-1/3 md:w-1/4 shrink-0 font-normal">Dikirim Dari</span>
-                                <span class="text-slate-700 font-medium uppercase font-['JetBrains_Mono']">Basecamp Project Gunung</span>
+                                <span class="text-slate-700 font-medium uppercase font-['JetBrains_Mono']">Basecamps Outdoor</span>
                             </div>
                         </div>
                     </div>
@@ -330,7 +330,7 @@
                         <h2 class="text-lg font-bold text-slate-800 tracking-tight">Deskripsi Produk</h2>
                     </div>
                     <div class="p-6 md:p-8 text-slate-700 leading-relaxed space-y-4 text-sm md:text-base font-sans whitespace-pre-line">
-                        {{ $product->description ?: "Deskripsi lengkap belum ditambahkan oleh Admin.\n\nPeralatan rental ini dijamin dalam kondisi " . strtolower($product->condition_badge) . " dan siap pakai untuk menemani petualangan mendaki gunung atau camping Anda. Sudah melalui pengecekan kualitas dan kelayakan fungsi standar Project Gunung." }}
+                        {{ $product->description ?: "Deskripsi lengkap belum ditambahkan oleh Admin.\n\nPeralatan rental ini dijamin dalam kondisi " . strtolower($product->condition_badge) . " dan siap pakai untuk menemani petualangan mendaki gunung atau camping Anda. Sudah melalui pengecekan kualitas dan kelayakan fungsi standar Basecamps Outdoor." }}
                     </div>
                 </div>
 

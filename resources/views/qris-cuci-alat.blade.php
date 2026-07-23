@@ -102,7 +102,7 @@
                                 . "- Jumlah: {$item['jumlah']} item%0A"
                                 . "- Catatan: {$catatan}";
                         }
-                        $waMessage = "Halo Admin Project Gunung!%0A%0ASaya ingin mengonfirmasi pembayaran cuci alat:%0A%0A"
+                        $waMessage = "Halo Admin Basecamps Outdoor!%0A%0ASaya ingin mengonfirmasi pembayaran cuci alat:%0A%0A"
                             . "Nama: *{$order['nama']}*%0A"
                             . "Paket: *{$order['paket_name']}*%0A"
                             . "Harga: *{$order['paket_price']} {$order['paket_unit']}*%0A"
