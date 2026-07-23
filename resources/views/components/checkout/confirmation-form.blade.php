@@ -61,21 +61,22 @@
                 </div>
             @endif
 
-            {{-- Pilih Paket Trip --}}
+            {{-- Paket Trip Terpilih --}}
             <div class="card p-6">
                 <div class="flex items-center gap-2 mb-4">
                     {!! $mountainIcon !!}
-                    <h2 class="text-xl font-bold text-gray-900">Pilihan Paket Open Trip</h2>
+                    <h2 class="text-xl font-bold text-gray-900">Paket Open Trip Terpilih</h2>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 font-['JetBrains_Mono'] uppercase tracking-widest mb-2">Pilih Destinasi / Paket</label>
-                    <select name="trip_id" x-model="tripId" required class="input font-bold text-gray-900">
-                        @foreach ($allTrips as $t)
-                            <option value="{{ $t->id }}" {{ ($selectedTrip && $selectedTrip->id == $t->id) ? 'selected' : '' }}>
-                                {{ $t->title }} — {{ $t->price }} / Orang
-                            </option>
-                        @endforeach
-                    </select>
+                <input type="hidden" name="trip_id" :value="tripId" />
+                <div class="p-4 bg-surface-soft rounded-xl border border-gray-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 font-['JetBrains_Mono'] uppercase tracking-widest block mb-1">Destinasi / Paket</span>
+                        <h3 class="text-lg font-bold text-gray-900" x-text="currentTrip.title"></h3>
+                    </div>
+                    <div class="sm:text-right">
+                        <span class="text-xs font-bold text-gray-400 font-['JetBrains_Mono'] uppercase tracking-widest block mb-1">Harga per Orang</span>
+                        <span class="text-primary font-extrabold text-lg" x-text="currentTrip.price"></span>
+                    </div>
                 </div>
             </div>
 

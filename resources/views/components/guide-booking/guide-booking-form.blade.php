@@ -77,14 +77,10 @@
                         <img :src="currentGuide.image" :alt="currentGuide.title" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 w-full">
-                        <label class="block text-xs font-bold text-gray-500 font-['JetBrains_Mono'] uppercase tracking-widest mb-2">Pilih Guide Profesional</label>
-                        <select name="guide_id" x-model="guideId" required class="input font-bold text-gray-900">
-                            @foreach ($allGuides as $g)
-                                <option value="{{ $g->id }}" {{ ($selectedGuide && $selectedGuide->id == $g->id) ? 'selected' : '' }}>
-                                    {{ $g->title }} — {{ $g->price }} / {{ $g->unit ?? 'Hari' }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input type="hidden" name="guide_id" :value="guideId" />
+                        <span class="block text-xs font-bold text-gray-400 font-['JetBrains_Mono'] uppercase tracking-widest mb-1">Guide Terpilih</span>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1" x-text="currentGuide.title"></h3>
+                        <span class="text-primary font-extrabold text-base" x-text="currentGuide.price + ' / ' + currentGuide.unit"></span>
                     </div>
                 </div>
             </div>
