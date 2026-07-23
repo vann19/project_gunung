@@ -91,7 +91,7 @@
     @endforeach
 
     {{-- Konten Utama (Text, Button, dan Weather Card di Mobile) --}}
-    <div class="relative z-10 h-full max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-12 flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-16 lg:py-0">
+    <div class="relative z-10 min-h-[100dvh] lg:min-h-0 lg:h-full max-w-[1280px] mx-auto px-5 sm:px-6 lg:px-12 flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-16 lg:py-0">
         <div class="w-full lg:w-1/2 flex flex-col items-start gap-3 sm:gap-6">
             <div class="px-3.5 py-1.5 bg-primary/20 rounded-full border border-primary/30 backdrop-blur-sm inline-flex items-center">
                 <span class="text-white text-xs font-medium font-['JetBrains_Mono'] uppercase tracking-widest">
