@@ -109,7 +109,7 @@
             </p>
 
             {{-- Button Sewa Sekarang --}}
-            <div class="flex flex-row items-center gap-4 mt-1 sm:mt-2">
+            <div class="hidden sm:flex flex-row items-center gap-4 mt-1 sm:mt-2">
                 <a href="/rental" class="px-6 py-3 sm:px-8 sm:py-4 bg-kuning hover:bg-kuning/90 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 shadow-lg">
                     <span class="text-zinc-800 text-xs sm:text-base font-bold">{{ __('home.hero_cta_rent') }}</span>
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
