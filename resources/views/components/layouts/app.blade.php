@@ -9,7 +9,8 @@
     <meta name="keywords" content="Basecamps Outdoor, Rental Alat Gunung, Open Trip, Guide Pendakian, Sewa Tenda, Pendakian Gunung, basecampsoutdoor.com">
     <meta name="author" content="Basecamps Outdoor">
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
 
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="website">
