@@ -3,10 +3,18 @@
 @php
     // Accept either a string title or a Trip model/object
     $tripTitle = is_object($trip) ? ($trip->title ?? 'Open Trip Expedition') : $trip;
-    $tripImage = '/img/rinjani.png';
+    $tripImage = asset('img/rinjani.png');
     if (is_object($trip) && !empty($trip->image)) {
         $img = $trip->image;
-        $tripImage = str_starts_with($img, '/') ? $img : '/' . $img;
+        if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
+            $tripImage = $img;
+        } elseif (str_starts_with($img, '/storage/') || str_starts_with($img, 'storage/')) {
+            $tripImage = asset(ltrim($img, '/'));
+        } elseif (str_starts_with($img, '/img/') || str_starts_with($img, 'img/')) {
+            $tripImage = asset(ltrim($img, '/'));
+        } else {
+            $tripImage = asset('storage/' . ltrim($img, '/'));
+        }
     }
 @endphp
 

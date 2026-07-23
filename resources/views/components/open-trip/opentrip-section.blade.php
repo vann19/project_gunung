@@ -51,9 +51,19 @@
                     $isFeatured = $trip['is_featured'] ?? $trip['featured'] ?? false;
                     $badgeClass = $trip['badge_class'] ?? $trip['badgeClass'] ?? 'bg-secondary-400 text-surface-dark';
                     $featuresList = is_string($trip['features']) ? json_decode($trip['features'], true) : ($trip['features'] ?? []);
-                    $tripImgSrc = !empty($trip['image'])
-                        ? (str_starts_with($trip['image'], '/') || str_starts_with($trip['image'], 'http') ? asset(ltrim($trip['image'], '/')) : asset('img/' . $trip['image']))
-                        : null;
+                    $tripImgSrc = null;
+                    if (!empty($trip['image'])) {
+                        $img = $trip['image'];
+                        if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
+                            $tripImgSrc = $img;
+                        } elseif (str_starts_with($img, '/storage/') || str_starts_with($img, 'storage/')) {
+                            $tripImgSrc = asset(ltrim($img, '/'));
+                        } elseif (str_starts_with($img, '/img/') || str_starts_with($img, 'img/')) {
+                            $tripImgSrc = asset(ltrim($img, '/'));
+                        } else {
+                            $tripImgSrc = asset('storage/' . ltrim($img, '/'));
+                        }
+                    }
                 @endphp
                 <div class="relative bg-white rounded-2xl flex flex-col
                             {{ $isFeatured
@@ -132,9 +142,19 @@
                     $isFeatured = $guide['is_featured'] ?? $guide['featured'] ?? false;
                     $badgeClass = $guide['badge_class'] ?? $guide['badgeClass'] ?? 'bg-secondary-400 text-surface-dark';
                     $featuresList = is_string($guide['features']) ? json_decode($guide['features'], true) : ($guide['features'] ?? []);
-                    $imgSrc = !empty($guide['image'])
-                        ? (str_starts_with($guide['image'], '/') || str_starts_with($guide['image'], 'http') ? asset(ltrim($guide['image'], '/')) : asset('img/' . $guide['image']))
-                        : asset('img/Guide helping climber.png');
+                    $imgSrc = asset('img/Guide helping climber.png');
+                    if (!empty($guide['image'])) {
+                        $img = $guide['image'];
+                        if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
+                            $imgSrc = $img;
+                        } elseif (str_starts_with($img, '/storage/') || str_starts_with($img, 'storage/')) {
+                            $imgSrc = asset(ltrim($img, '/'));
+                        } elseif (str_starts_with($img, '/img/') || str_starts_with($img, 'img/')) {
+                            $imgSrc = asset(ltrim($img, '/'));
+                        } else {
+                            $imgSrc = asset('storage/' . ltrim($img, '/'));
+                        }
+                    }
                 @endphp
                 <div class="relative bg-white rounded-2xl flex flex-col
                             {{ $isFeatured
