@@ -77,7 +77,11 @@
 
                         this.$watch('currentVariant', (val) => {
                             if (val && val.image) {
-                                this.mainImage = val.image.startsWith('/') ? val.image : '/' + val.image;
+                                if (val.image.startsWith('http')) {
+                                    this.mainImage = val.image;
+                                } else {
+                                    this.mainImage = val.image.startsWith('/') ? val.image : '/' + val.image;
+                                }
                             } else {
                                 this.mainImage = '{{ img_url($product->main_image) }}';
                             }

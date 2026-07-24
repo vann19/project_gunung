@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CuciAlatController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HikingGuideController;
 use App\Http\Controllers\Admin\MarketplaceController;
 use App\Http\Controllers\Admin\OpenTripController;
@@ -10,7 +12,9 @@ use App\Http\Controllers\Admin\RentalController;
 use App\Http\Controllers\Admin\RentalOrderController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Blog;
 use App\Models\CuciAlat;
+use App\Models\Faq;
 use App\Models\HikingGuide;
 use App\Models\MarketplaceItem;
 use App\Models\OpenTrip;
@@ -41,6 +45,21 @@ Route::get('/info-gunung', function () {
     $mountains = \App\Models\Mountain::where('is_visible', true)->latest()->get();
     return view('info-gunung.index', compact('mountains'));
 })->name('info-gunung.index');
+
+Route::get('/blog', function () {
+    $blogs = Blog::where('is_published', true)->latest()->get();
+    return view('blogs', compact('blogs'));
+})->name('blog.index');
+
+Route::get('/blog/{slug}', function ($slug) {
+    $blog = Blog::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    return view('blog-detail', compact('blog'));
+})->name('blog.show');
+
+Route::get('/faq', function () {
+    $faqs = Faq::where('is_active', true)->orderBy('order', 'asc')->latest()->get();
+    return view('faqs', compact('faqs'));
+})->name('faq.index');
 
 Route::get('/info-gunung/{slug}', function ($slug) {
     $mountain = \App\Models\Mountain::with('routes')->where('slug', $slug)->where('is_visible', true)->firstOrFail();
@@ -578,6 +597,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('admin/hiking-guide-orders', \App\Http\Controllers\Admin\HikingGuideOrderController::class)->only(['index', 'destroy'])->names('admin.hiking-guide-orders');
     Route::patch('admin/hiking-guide-orders/{order}/status', [\App\Http\Controllers\Admin\HikingGuideOrderController::class, 'updateStatus'])->name('admin.hiking-guide-orders.status');
     Route::delete('admin/hiking-guide-orders-delete-all', [\App\Http\Controllers\Admin\HikingGuideOrderController::class, 'deleteAll'])->name('admin.hiking-guide-orders.delete-all');
+
+    // Blog & FAQ Routes
+    Route::resource('admin/blogs', BlogController::class, ['as' => 'admin']);
+    Route::resource('admin/faqs', FaqController::class, ['as' => 'admin']);
 });
 
 Route::get('/admin-login', function () {
@@ -602,6 +625,14 @@ Route::get('/sitemap.xml', function () {
 
     $content = view('sitemap', compact('mountains', 'equipments'));
     return response($content, 200)->header('Content-Type', 'text/xml');
+});
+
+Route::get('/clear-cache-sekarang', function () {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    return 'Berhasil! Semua Cache Hostinger Sudah Dihapus. Silakan kembali ke halaman utama dan refresh!';
 });
 
 require __DIR__.'/auth.php';

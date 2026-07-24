@@ -101,6 +101,14 @@
                 <div :class="active === '/info-gunung' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">Info Gunung</div>
             </a>
 
+            <a href="/blog" @click="active = '/blog'" :class="active === '/blog' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
+                <div :class="active === '/blog' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">Blog</div>
+            </a>
+
+            <a href="/faq" @click="active = '/faq'" :class="active === '/faq' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
+                <div :class="active === '/faq' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">FAQ</div>
+            </a>
+
             <a href="/contact" @click="active = '/contact'" :class="active === '/contact' ? 'border-b-2 border-primary' : 'border-b-0'" class="pb-1 flex flex-col justify-start items-start group transition-all">
                 <div :class="active === '/contact' ? 'font-bold text-primary' : 'font-normal text-primary/75'" class="text-base leading-6 transition-colors group-hover:text-primary">{{ __('nav.contact') }}</div>
             </a>
@@ -324,6 +332,36 @@
                     </svg>
                 </div>
                 <span class="text-[10px] font-{{ $currentPath === '/info-gunung' ? 'bold' : 'medium' }} leading-none">Info Gunung</span>
+            </a>
+
+            {{-- Blog --}}
+            <a href="/blog"
+               class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 active:scale-90
+                      {{ $currentPath === '/blog' ? 'text-primary' : 'text-gray-400' }}">
+                <div class="relative">
+                    @if($currentPath === '/blog')
+                        <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
+                    @endif
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="{{ $currentPath === '/blog' ? '2.5' : '1.8' }}" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                    </svg>
+                </div>
+                <span class="text-[10px] font-{{ $currentPath === '/blog' ? 'bold' : 'medium' }} leading-none">Blog</span>
+            </a>
+
+            {{-- FAQ --}}
+            <a href="/faq"
+               class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 active:scale-90
+                      {{ $currentPath === '/faq' ? 'text-primary' : 'text-gray-400' }}">
+                <div class="relative">
+                    @if($currentPath === '/faq')
+                        <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
+                    @endif
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="{{ $currentPath === '/faq' ? '2.5' : '1.8' }}" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="text-[10px] font-{{ $currentPath === '/faq' ? 'bold' : 'medium' }} leading-none">FAQ</span>
             </a>
 
             {{-- Kontak --}}
