@@ -114,7 +114,7 @@
                     <div class="relative">
                         <select name="condition_badge" onchange="this.form.submit()" class="appearance-none py-2 pl-4 pr-10 bg-white border border-slate-200 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-700 w-full sm:w-auto">
                             <option value="all" {{ request('condition_badge') == 'all' || !request('condition_badge') ? 'selected' : '' }}>Semua Kondisi</option>
-                            <option value="Baru" {{ request('condition_badge') == 'Baru' ? 'selected' : '' }}>Kondisi Baru</option>
+
                             <option value="Second" {{ request('condition_badge') == 'Second' ? 'selected' : '' }}>Kondisi Second</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
@@ -374,7 +374,7 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Badge Kondisi <span class="text-rose-500">*</span></label>
                                 <select name="condition_badge" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold">
-                                    <option value="Baru" class="text-emerald-600">Baru (Kondisi Baru)</option>
+
                                     <option value="Second" class="text-amber-600">Second (Terawat)</option>
                                 </select>
                             </div>
@@ -524,7 +524,7 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Badge Kondisi <span class="text-rose-500">*</span></label>
                                 <select name="condition_badge" id="edit_condition_badge" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold">
-                                    <option value="Baru" class="text-emerald-600">Baru (Kondisi Baru)</option>
+
                                     <option value="Second" class="text-amber-600">Second (Terawat)</option>
                                 </select>
                             </div>
@@ -633,7 +633,7 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 font-['JetBrains_Mono']">Kondisi Barang</label>
                             <select name="condition_badge" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                                <option value="Baru">Baru</option>
+
                                 <option value="Bekas" selected>Bekas</option>
                             </select>
                         </div>
