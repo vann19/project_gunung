@@ -36,7 +36,8 @@
 
         {{-- SIDEBAR ala Shadcn UI (Bertema Primary) --}}
         <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-               class="fixed inset-y-0 left-0 z-50 w-64 bg-primary text-white border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out lg:static lg:inset-0 shrink-0 shadow-2xl lg:shadow-none">
+               class="fixed inset-y-0 left-0 z-50 w-64 bg-primary text-white border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen shrink-0 shadow-2xl lg:shadow-none"
+               style="align-self: flex-start;">
             
             {{-- Sidebar Header / Brand --}}
             <div class="h-16 px-6 flex items-center justify-between border-b border-white/10 bg-primary/80 backdrop-blur-md">
